@@ -244,6 +244,8 @@ ol.stations .ctl input{width:38px;padding:1px 3px;border:1px solid var(--rule-2)
   .intro .feat{grid-template-columns:1fr;gap:12px}
   .intro .nav{margin-top:20px;padding-top:12px}
 }
+#radKv td:last-child,#sunKv td:last-child,#kv td:last-child{white-space:normal}
+@media (max-width:760px){header.top{overflow-x:auto;scrollbar-width:none}header.top>*{flex-shrink:0}}
 /* collapsible side panels */
 .app{transition:grid-template-columns .22s ease}
 .app.hideL{grid-template-columns:0 minmax(0,1fr) 360px}
@@ -256,7 +258,7 @@ ol.stations .ctl input{width:38px;padding:1px 3px;border:1px solid var(--rule-2)
 .edge:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
 .edge.l{left:0;border-left:0;border-radius:0 3px 3px 0}
 .edge.r{right:0;border-right:0;border-radius:3px 0 0 3px}
-@media (max-width:1180px){.edge{display:none}.app.hideL .col.left,.app.hideR .col.right{visibility:visible;overflow:visible}}
+@media (max-width:1180px){.edge{display:none}.app.hideL .col.left,.app.hideR .col.right{visibility:visible;overflow:visible}.app.hideL,.app.hideR,.app.hideL.hideR{grid-template-columns:1fr}}
 #map3d{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
 #map3d.drag{cursor:grabbing}
 #map3d.place{cursor:crosshair}
@@ -364,7 +366,8 @@ details.src > div{padding:0 14px 14px}
 .tour-dots i.done{background:#e3a07c}
 .tour-dots i.on{background:#c2410c;width:16px;border-radius:4px}
 .tour-card button[disabled]{opacity:.4;cursor:default}
-.tour-card [data-tour="skip"]{border-color:transparent;color:#7b7466}@media(max-width:700px){.tour-card{right:10px;bottom:10px;width:calc(100vw - 20px);padding:15px}.tour-spot{max-width:calc(100vw - 20px)}}
+.tour-card [data-tour="skip"]{border-color:transparent;color:#7b7466}@media(max-width:700px){.tour-card{right:10px;bottom:10px;width:auto;padding:15px}.tour-spot{max-width:calc(100vw - 20px)}}
+@media(max-width:700px){.tour-card.center{width:calc(100vw - 20px)}.tour-card:not(.center){max-height:42vh}.tour-card .tour-why{font-size:12px}}
 
 </style>
 </head>
@@ -1890,6 +1893,8 @@ const I18N = {
   "CRISM mineral göstergeleri": "CRISM mineral indicators",
   "MRO CRISM MTRDR özet parametreleri, 18–36 m · R sülfat, Y kil, M su": "MRO CRISM MTRDR summary parameters, 18–36 m · R sulfate, G clay, B water",
   "Eğim sınıfları": "Slope classes",
+  "Etkileşimli rehber": "Interactive guide",
+  "Özellikleri adım adım öğren": "Learn the features step by step",
   "Güneş gölgesi": "Sun shadows",
   "HiRISE DTM üzerinde ışın izleme · Mars24 güneş konumu · saat": "Ray-traced on the HiRISE DTM · Mars24 sun position · time",
   "Güneş, gölge ve doz": "Sun, shadow and dose",
@@ -2949,7 +2954,8 @@ $('exSeg').addEventListener('click', e => {
       title: ['Paneller kapalı başlar', 'The panels start closed'],
       body: ['Harita tüm ekranı kullanır. Sol kenardaki ‹ › düğmesi (veya [ tuşu) görev ve katman panelini, sağ kenardaki düğme (veya ] tuşu) plan, uyarı ve çevre panelini açar. Sonraki adımda ikisini de açıyorum.',
         'The map uses the whole screen. The ‹ › button on the left edge (or the [ key) opens the mission and layer panel; the one on the right (or ]) opens plan, warnings and environment. Next step opens both.'],
-      why: ['Sahada, tablette veya kask ekranında haritanın kendisi en önemli bilgidir; paneller gerektiğinde açılır.', 'In the field, on a tablet or a helmet display, the map itself matters most; panels open when needed.'] },
+      why: ['Sahada, tablette veya kask ekranında haritanın kendisi en önemli bilgidir; paneller gerektiğinde açılır.', 'In the field, on a tablet or a helmet display, the map itself matters most; panels open when needed.'],
+      narrow: { target: '#leftCol', title: ['Küçük ekran düzeni', 'Small-screen layout'], body: ['Bu ekran genişliğinde harita üstte, görev ve plan panelleri onun altında sıralanır; aşağı kaydırarak hepsine ulaşırsın. Rehber ilgili bölüme seni kendisi kaydırır.', 'At this screen width the map sits on top and the mission and plan panels follow below it; scroll down to reach them. The guide scrolls to each section for you.'] } },
     { target: '#mapwrap', before: () => { panel('L', true); panel('R', true); }, k: ['HARİTA', 'MAP'],
       title: ['Sektör haritası', 'The sector map'],
       body: ['2,4 × 5,2 km\'lik alan HiRISE ortofoto ve 1 m DTM üzerine kurulu. Sürükleyerek kaydır, tekerlekle yakınlaş; imlecin altındaki noktanın yükseltisi, eğimi, pürüzlülüğü ve jeolojik birimi sol alttaki kutuda yazar. Mavi kesikli çizgi Curiosity\'nin gerçek rotası, turuncu çizgi senin EVA planın.',
@@ -3084,25 +3090,30 @@ $('exSeg').addEventListener('click', e => {
     show(0);
     if (!start.hooked) { start.hooked = true; const app = document.querySelector('.app'); if (app) app.addEventListener('transitionend', () => { if (card) { const el = targetOf(steps[index]); if (el) el.scrollIntoView({ block: 'center', inline: 'nearest' }); position(); } }); }
   }
+  const NARROW = () => matchMedia('(max-width:1180px)').matches;
   const targetOf = st => { if (!st.target) return null; let el = document.querySelector(st.target); if (el && st.pick) el = st.pick(el); return el && el.getClientRects().length ? el : null; };
   function position() {
     if (!card) return;
     const st = steps[index], el = targetOf(st);
     card.classList.toggle('center', !el);
     shade.style.display = el ? 'none' : 'block';   // the spotlight's own shadow dims the page when there is a target
-    if (!el) { spot.style.display = 'none'; card.style.left = card.style.right = ''; return; }
+    if (!el) { spot.style.display = 'none'; card.style.left = card.style.right = card.style.top = card.style.bottom = ''; return; }
     const r = el.getBoundingClientRect(); spot.style.display = 'block';
     const L0 = Math.max(4, r.left - 5), T0 = Math.max(4, r.top - 5);
     spot.style.left = L0 + 'px'; spot.style.top = T0 + 'px';
     spot.style.width = Math.max(12, Math.min(innerWidth - L0 - 4, r.width + 10)) + 'px'; spot.style.height = Math.max(12, Math.min(innerHeight - T0 - 4, r.height + 10)) + 'px';
     // card on the side away from the target, so it never covers what it explains
     const cx = r.left + r.width / 2, wide = r.width > innerWidth * .55;
-    if (!wide && cx > innerWidth * .5) { card.style.left = '22px'; card.style.right = 'auto'; } else { card.style.right = '22px'; card.style.left = 'auto'; }
+    card.style.top = card.style.bottom = '';
+    if (innerWidth <= 700) {   // phone: full-width card in the half of the screen away from the target
+      card.style.left = card.style.right = '10px';
+      if (r.top + r.height / 2 > innerHeight / 2) { card.style.top = '10px'; card.style.bottom = 'auto'; } else { card.style.bottom = '10px'; card.style.top = 'auto'; }
+    } else if (!wide && cx > innerWidth * .5) { card.style.left = '22px'; card.style.right = 'auto'; } else { card.style.right = '22px'; card.style.left = 'auto'; }
   }
   function show(n) {
     if (!card) return;
     timers.forEach(clearTimeout); timers = [];
-    index = Math.max(0, Math.min(steps.length - 1, n)); const st = steps[index];
+    index = Math.max(0, Math.min(steps.length - 1, n)); const st0 = steps[index], st = (st0.narrow && NARROW()) ? { ...st0, ...st0.narrow } : st0;
     try { if (st.before) st.before(); } catch (e) { console.warn('tour step', e); }
     const go = () => { const el = targetOf(st); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }); later(position, 260); later(position, 600); };
     later(go, st.delay || 300); position();
@@ -3123,7 +3134,7 @@ $('exSeg').addEventListener('click', e => {
     const box = document.createElement('section'); box.className = 'tour-card tour-offer center'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', T('Rehber önerisi', 'Guide suggestion'));
     const sh = document.createElement('div'); sh.className = 'tour-shade';
     box.innerHTML = `<div class="tour-kicker">MARSWALK · ${T('İLK KULLANIM', 'FIRST USE')}</div><h2>${T('Önce rehberi açmanı öneririz', 'We recommend starting the guide first')}</h2>
-      <p>${T('Yan paneller şu an kapalı, harita tüm ekranda. Etkileşimli rehber panelleri senin için açar ve görev planlama, veri katmanları, güneş/gölge/doz ve SOS acil durum sistemini gerçek arayüz üzerinde adım adım gösterir (~3–4 dk).', 'The side panels are closed for now and the map fills the screen. The interactive guide opens the panels for you and walks through mission planning, data layers, sun/shadow/dose and the SOS emergency system on the real interface (~3–4 min).')}</p>
+      <p>${NARROW() ? T('Etkileşimli rehber görev planlama, veri katmanları, güneş/gölge/doz ve SOS acil durum sistemini gerçek arayüz üzerinde adım adım gösterir (~3–4 dk).', 'The interactive guide walks through mission planning, data layers, sun/shadow/dose and the SOS emergency system on the real interface (~3–4 min).') : ''}${NARROW() ? '' : T('Yan paneller şu an kapalı, harita tüm ekranda. Etkileşimli rehber panelleri senin için açar ve görev planlama, veri katmanları, güneş/gölge/doz ve SOS acil durum sistemini gerçek arayüz üzerinde adım adım gösterir (~3–4 dk).', 'The side panels are closed for now and the map fills the screen. The interactive guide opens the panels for you and walks through mission planning, data layers, sun/shadow/dose and the SOS emergency system on the real interface (~3–4 min).')}</p>
       <label class="tour-never"><input type="checkbox" id="tourNever"> ${T('Bir daha gösterme', 'Do not show again')}</label>
       <div class="tour-controls"><span class="tour-count"></span><button type="button" data-tour="skip">${T('Atla', 'Skip')}</button><button class="primary" type="button" data-tour="start">${T('Rehberi başlat', 'Start the guide')}</button></div>`;
     document.body.append(sh, box);
@@ -3134,7 +3145,7 @@ $('exSeg').addEventListener('click', e => {
     box.querySelector('[data-tour="start"]').addEventListener('click', () => { done(); start(); });
     box.querySelector('[data-tour="start"]').focus();
   }
-  function hintPanels() { if (typeof toast === 'function') setTimeout(() => toast(T('Paneller kapalı: kenarlardaki ‹ › düğmeleriyle veya [ ] tuşlarıyla aç. Rehber üst çubukta.', 'Panels are closed: open them with the ‹ › edge buttons or the [ ] keys. The guide is in the top bar.')), 300); }
+  function hintPanels() { if (NARROW()) return; if (typeof toast === 'function') setTimeout(() => toast(T('Paneller kapalı: kenarlardaki ‹ › düğmeleriyle veya [ ] tuşlarıyla aç. Rehber üst çubukta.', 'Panels are closed: open them with the ‹ › edge buttons or the [ ] keys. The guide is in the top bar.')), 300); }
   const intro = document.getElementById('intro');
   const watch = () => { if (intro && intro.hidden) setTimeout(offer, 500); };
   if (intro) new MutationObserver(watch).observe(intro, { attributes: true, attributeFilter: ['hidden'] });
