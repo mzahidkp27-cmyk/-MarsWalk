@@ -115,20 +115,63 @@ ol.stations .ctl input{width:38px;padding:1px 3px;border:1px solid var(--rule-2)
 .btn.sos{background:#b3261e;border-color:#b3261e;color:#fff;font-weight:600;letter-spacing:.02em}
 .btn.sos:hover{background:#c8352b}
 .btn.sos.on{box-shadow:0 0 0 2px #fff inset}
-.emerg{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:5;width:min(520px,calc(100% - 24px));background:rgba(24,12,10,.96);color:#f5ece6;border:1px solid #d0281c;border-radius:4px;box-shadow:0 8px 28px rgba(0,0,0,.5);padding:12px 14px;font-size:13px}
+/* SOS panel: absolutely positioned inside the map, dragged by its header (left/top in px, clamped to the map) */
+.emerg{position:absolute;left:12px;top:10px;z-index:6;width:min(440px,calc(100% - 16px));max-height:min(calc(100% - 16px),600px);display:flex;flex-direction:column;background:rgba(22,12,10,.97);color:#f5ece6;border:1px solid #d0281c;border-radius:4px;box-shadow:0 8px 28px rgba(0,0,0,.5);font-size:12.5px;touch-action:auto}
 .emerg[hidden]{display:none}
-.emerg .ehd{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.emerg .ehd b{font:600 12px var(--mono);letter-spacing:.08em;color:#ff7a6e}
-.emerg .ehd i{width:9px;height:9px;border-radius:50%;background:#d0281c;animation:ePulse 1.2s ease-in-out infinite}
-@keyframes ePulse{50%{opacity:.25}}
-.emerg .ehd button{margin-left:auto;background:none;border:0;color:#cdbfb6;font-size:18px;cursor:pointer;line-height:1}
-.emerg .seg{border-color:#6a3a33;margin-bottom:8px;display:flex}
-.emerg .seg button{flex:1;color:#f5ece6}
-.emerg .seg button+button{border-left-color:#6a3a33}
-.emerg .seg button.on{background:#d0281c;color:#fff}
-.emerg .epos{display:flex;align-items:center;gap:8px;font:11.5px var(--mono);color:#cdbfb6;margin-bottom:8px}
-.emerg .epos button{margin-left:auto;background:transparent;border:1px solid #6a3a33;color:#f5ece6;border-radius:3px;padding:3px 8px;cursor:pointer;font:12px var(--sans)}
-.emerg .epos button.on{background:#f5ece6;color:#1c0f0c}
+.emerg .ehd{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 12px;background:#3a0f0b;border-bottom:1px solid #6a2a22;border-radius:4px 4px 0 0;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;flex:none}
+.emerg.dragging .ehd{cursor:grabbing}
+.emerg.dragging{box-shadow:0 12px 34px rgba(0,0,0,.65)}
+.emerg .ehd b{font:600 12px var(--mono);letter-spacing:.08em;color:#ff8a7e;white-space:nowrap}
+.emerg .ehd i{width:9px;height:9px;border-radius:50%;background:#7a3a33;flex:none}
+.emerg.live .ehd i{background:#ff3b2b;animation:ePulse 1.4s ease-in-out infinite}
+@keyframes ePulse{50%{opacity:.3}}
+.emerg .ehd .grip{font:12px var(--mono);color:#a87a70;letter-spacing:-1px;margin-right:2px}
+.emerg .ehd .small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.emerg .ehd button{background:none;border:1px solid transparent;color:#e6d4cc;font:15px/1 var(--mono);cursor:pointer;width:26px;height:24px;border-radius:3px;flex:none}
+.emerg .ehd button:hover{border-color:#8a4a40;background:rgba(255,255,255,.06)}
+.emerg .ebody{padding:10px 12px 12px;overflow:auto;min-height:0}
+.emerg .sim{font:600 10px var(--mono);letter-spacing:.06em;color:#1c0f0c;background:#f2b84b;border-radius:2px;padding:1px 4px;margin-left:4px;vertical-align:1px;white-space:nowrap}
+.emerg .disc{margin:0 0 9px;padding:6px 8px;border:1px dashed #7a4a40;border-radius:3px;font-size:11.5px;color:#d9c6bd;line-height:1.4}
+.emerg .lbl{font:600 10.5px var(--mono);letter-spacing:.07em;color:#ff8a7e;margin:10px 0 5px;text-transform:uppercase}
+.emerg .lbl:first-child{margin-top:0}
+.emerg .etypes{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}
+.emerg .etypes button{text-align:left;background:rgba(255,255,255,.03);border:1px solid #5a2e28;color:#f5ece6;border-radius:3px;padding:5px 7px;cursor:pointer;font:12px var(--sans)}
+.emerg .etypes button:hover{border-color:#a0453a}
+.emerg .etypes button.on{background:#7a1a12;border-color:#ff5a4a;color:#fff}
+.emerg .etypes button small{display:block;color:#b8a79c;font-size:10.5px}
+.emerg .etypes button.on small{color:#ffd0c8}
+.emerg .sosbig{display:block;width:100%;margin:10px 0 0;padding:12px 10px;border:2px solid #ff6a5a;border-radius:6px;background:#c41d12;color:#fff;font:700 20px/1 var(--mono);letter-spacing:.12em;cursor:pointer;box-shadow:0 0 0 3px rgba(196,29,18,.25)}
+.emerg .sosbig:hover{background:#d9281c}
+.emerg .sosbig small{display:block;font:500 11px var(--sans);letter-spacing:0;margin-top:5px;color:#ffe0da}
+.emerg .confirm{margin-top:10px;padding:10px;border:1px solid #ff5a4a;border-radius:4px;background:rgba(196,29,18,.18)}
+.emerg .confirm p{margin:0 0 8px}
+.emerg .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.emerg .acts button,.emerg .ebtn{background:transparent;border:1px solid #7a4a40;color:#f5ece6;border-radius:3px;padding:4px 9px;cursor:pointer;font:12px var(--sans)}
+.emerg .acts button:hover,.emerg .ebtn:hover{border-color:#c0675a}
+.emerg .acts button.pri{background:#c41d12;border-color:#ff6a5a;color:#fff;font-weight:600}
+.emerg .ebtn.on{background:#f5ece6;color:#1c0f0c}
+.emerg table.info{width:100%;border-collapse:collapse;font-size:12px}
+.emerg table.info td{padding:3px 0;border-bottom:1px solid #3d2420;vertical-align:top}
+.emerg table.info td:first-child{color:#b8a79c;width:42%;padding-right:8px}
+.emerg table.info td:last-child{font-family:var(--mono);font-size:11.5px;text-align:right}
+.emerg table.info .warnv{color:#ffb4a8}
+.emerg .o2bar{height:5px;background:#3d2420;border-radius:3px;margin-top:3px;overflow:hidden}
+.emerg .o2bar i{display:block;height:100%;background:#f2b84b}
+.emerg .simrow{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11.5px;color:#cdbfb6}
+.emerg .simrow input{flex:1;accent-color:#d0281c}
+.emerg ol.etl{list-style:none;margin:4px 0 0;padding:0;border-left:2px solid #6a2a22}
+.emerg ol.etl li{position:relative;padding:3px 0 5px 12px;line-height:1.35}
+.emerg ol.etl li::before{content:"";position:absolute;left:-6px;top:7px;width:8px;height:8px;border-radius:50%;background:#22100d;border:2px solid #d0281c}
+.emerg ol.etl li.end::before{background:#d0281c}
+.emerg ol.etl b{font:600 11px var(--mono);color:#ffb4a8;margin-right:6px}
+.emerg .ekey{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#cdbfb6;margin-top:6px}
+.emerg .ekey span{display:inline-flex;align-items:center;gap:5px}
+.emerg .ekey i{display:inline-block;width:18px;height:4px;border-radius:2px}
+.sosmini{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:6;background:#b3261e;color:#fff;border:1px solid #ff6a5a;border-radius:14px;padding:4px 12px;font:700 12px/1.2 var(--mono);letter-spacing:.1em;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+.sosmini:hover{background:#c8352b}
+.sosmini[hidden]{display:none}
+.sosmini.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:6px;vertical-align:1px;animation:ePulse 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.emerg.live .ehd i,.sosmini.live::before{animation:none}}
 .emerg .ebig{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-top:1px solid #4a2a25;padding-top:8px}
 .emerg .ebig span{font-weight:600;font-size:15px}
 .emerg .ebig b{font:600 24px var(--mono);color:#fff}
@@ -138,7 +181,7 @@ ol.stations .ctl input{width:38px;padding:1px 3px;border:1px solid var(--rule-2)
 .emerg .enote{margin:8px 0 0;padding:7px 9px;background:rgba(208,40,28,.16);border-left:3px solid #d0281c;font-size:12.5px;line-height:1.45}
 .emerg .estop{color:#ff9c92;margin:0}
 .emerg .small{color:#cdbfb6}
-@media (max-width:700px){.emerg{top:52px}.emerg .egrid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:700px){.emerg .egrid{grid-template-columns:repeat(2,1fr)}.emerg .etypes{grid-template-columns:1fr 1fr}}
 /* ---------- intro ---------- */
 .intro{position:fixed;inset:0;z-index:50;background:#0f0e0c;color:#efe9de;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);transition:opacity .35s ease}
 .intro.out{opacity:0;pointer-events:none}
@@ -182,6 +225,7 @@ ol.stations .ctl input{width:38px;padding:1px 3px;border:1px solid var(--rule-2)
 .intro .globe .gtxt{position:absolute;left:72px;bottom:56px;max-width:520px;z-index:1;pointer-events:none;transition:opacity .7s ease,transform .7s ease}
 .intro .globe.flying .gtxt,.intro .globe.flying .gcoord{opacity:0;transform:translateY(10px)}
 .intro .globe .gcoord{transition:opacity .7s ease}
+#globeCv{touch-action:none}
 .intro .globe .gtxt .nav{pointer-events:auto;margin-top:22px;padding-top:0}
 .intro .globe .gtxt .lede{text-shadow:0 1px 8px #000}
 .intro .globe .gtxt h1{text-shadow:0 2px 14px #000}
@@ -297,6 +341,31 @@ details.src > div{padding:0 14px 14px}
   .probe{display:none}
   .legend{max-width:170px;font-size:10.5px}
 }
+
+/* ---------- independent feature tutorial ---------- */
+.tour-shade{position:fixed;inset:0;z-index:90;pointer-events:none;background:rgba(8,7,6,.58)}
+.tour-spot{position:fixed;z-index:91;pointer-events:none;border:2px solid #f07a40;border-radius:5px;box-shadow:0 0 0 5px rgba(240,122,64,.2),0 0 0 9999px rgba(8,7,6,.58);transition:all .22s ease}
+.tour-card{position:fixed;z-index:92;right:22px;bottom:22px;width:min(440px,calc(100vw - 28px));max-height:min(390px,calc(100vh - 36px));overflow:auto;background:#f3efe6;color:#1c1a17;border:1px solid #b6ac99;border-radius:6px;box-shadow:0 18px 60px rgba(0,0,0,.42);padding:18px 20px;font:13px/1.55 var(--sans)}
+.tour-card .tour-kicker{font:11px var(--mono);letter-spacing:.06em;color:#c2410c;margin-bottom:7px}
+.tour-card h2{font-size:20px;line-height:1.2;margin:0 0 9px;color:#1c1a17}
+.tour-card p{font-size:13px;line-height:1.6;color:#47423a;margin:0 0 10px}
+.tour-card .tour-why{border-left:3px solid #c2410c;padding:7px 10px;background:#ebe6db;color:#47423a;margin-top:10px}
+.tour-card .tour-controls{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid #d2cabb}
+.tour-card button{border:1px solid #b6ac99;background:transparent;color:#1c1a17;border-radius:3px;padding:7px 11px;cursor:pointer}
+.tour-card button:hover{background:#ebe6db}
+.tour-card button.primary{background:#c2410c;color:white;border-color:#c2410c}
+.tour-card .tour-count{font:11px var(--mono);color:#7b7466;margin-right:auto}
+.tour-card .tour-close{float:right;border:0;font-size:19px;padding:0 5px;color:#7b7466}
+.tour-card.center{left:50%!important;right:auto!important;top:50%;bottom:auto;transform:translate(-50%,-50%);max-height:min(520px,calc(100vh - 36px))}
+.tour-card.tour-offer{width:min(480px,calc(100vw - 28px))}
+.tour-card .tour-never{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#5c564c;margin-top:4px;cursor:pointer}
+.tour-dots{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px}
+.tour-dots i{width:7px;height:7px;border-radius:50%;background:#d2cabb}
+.tour-dots i.done{background:#e3a07c}
+.tour-dots i.on{background:#c2410c;width:16px;border-radius:4px}
+.tour-card button[disabled]{opacity:.4;cursor:default}
+.tour-card [data-tour="skip"]{border-color:transparent;color:#7b7466}@media(max-width:700px){.tour-card{right:10px;bottom:10px;width:calc(100vw - 20px);padding:15px}.tour-spot{max-width:calc(100vw - 20px)}}
+
 </style>
 </head>
 <body>
@@ -342,7 +411,7 @@ details.src > div{padding:0 14px 14px}
   <figure class="pic" id="introPic"></figure>
   <section class="globe" id="globeSec" hidden aria-label="Mars">
     <canvas id="globeCv"></canvas>
-    <div class="gcoord">MARS · Viking MDIM 2.1<br>NASA / USGS · Mars Trek</div>
+    <div class="gcoord" id="gSrc">MARS · Viking MDIM 2.1<br>NASA / USGS · Mars Trek</div>
     <div class="gtxt">
       <div class="kick">HEDEF · GALE KRATERİ</div>
       <h1>Mount Sharp, Gale krateri</h1>
@@ -359,6 +428,7 @@ details.src > div{padding:0 14px 14px}
   <button class="btn sos" id="sosBtn" title="Acil durum: en yakın korunağa rota">ACİL</button>
   <button class="btn" id="langBtn" title="Dil / Language">EN</button>
   <button class="btn" id="aboutBtn" title="Tanıtım ekranını yeniden aç">Hakkında</button>
+  <button class="btn" id="tutorialOpenBtn" title="Özellikleri adım adım öğren">Etkileşimli rehber</button>
   <button class="btn" id="refreshBtn" title="Uzay havası, hava durumu ve Curiosity konumunu NASA'dan yeniden çek">Verileri yenile</button>
   <button class="btn" id="themeBtn" title="Gece ve gündüz görünümü arasında geçiş">Gece</button>
 </header>
@@ -429,6 +499,7 @@ details.src > div{padding:0 14px 14px}
       <div class="layer"><input type="checkbox" id="lCrism"><label for="lCrism">CRISM mineral göstergeleri</label><div class="src">MRO CRISM MTRDR özet parametreleri, 18–36 m · R sülfat, Y kil, M su</div></div>
       <div class="layer"><input type="checkbox" id="lSlope"><label for="lSlope">Eğim sınıfları</label><div class="src">HiRISE DTM mozaiği, 1 m · USGS / MSL Gale v3</div></div>
       <div class="layer"><input type="checkbox" id="lRough"><label for="lRough">Pürüzlülük, bloklu zemin</label><div class="src">Aynı DTM'den türetildi (10 m yüksek geçiren)</div></div>
+      <div class="layer"><input type="checkbox" id="lShade"><label for="lShade">Güneş gölgesi</label><div class="src">HiRISE DTM üzerinde ışın izleme · Mars24 güneş konumu · saat <output id="oShadeT"></output> LMST</div><input type="range" id="shadeT" min="360" max="1080" step="10" value="570" style="width:100%;margin-top:4px" aria-label="Gölge saati"></div>
       <div class="layer"><input type="checkbox" id="lThemis"><label for="lThemis">Gece termal parlaklığı</label><div class="src">THEMIS IR gece mozaiği v14, 100 m · Mars Odyssey</div></div>
       <div class="layer"><input type="checkbox" id="lCont" checked><label for="lCont">Eş yükselti eğrileri, 5 m</label><div class="src">DTM, 12 m düzleştirilmiş</div></div>
       <div class="layer"><input type="checkbox" id="lIso" checked><label for="lIso">Gezgine dönüş süresi</label><div class="src">Bu sayfa hesaplıyor: eğim ve pürüzlülüğe göre en kısa yürüyüş süresi</div></div>
@@ -442,11 +513,10 @@ details.src > div{padding:0 14px 14px}
     <canvas id="map" aria-label="Sektör haritası"></canvas>
     <canvas id="map3d" aria-label="Sektörün üç boyutlu arazi görünümü" hidden></canvas>
     <div id="labels3d" hidden></div>
+    <button class="sosmini" id="sosMini" type="button">SOS</button>
     <div class="emerg" id="emerg" hidden role="dialog" aria-labelledby="eTitle">
-      <div class="ehd"><i></i><b id="eTitle">ACİL DURUM</b><span class="small">en yakın korunağa en hızlı yol</span><button id="eClose" aria-label="Kapat">×</button></div>
-      <div class="seg" id="eType"><button data-v="dust">Toz fırtınası</button><button data-v="sep">Radyasyon (SEP)</button><button data-v="suit">Giysi arızası</button></div>
-      <div class="epos"><span>Astronot:</span><span id="ePos"></span><button id="ePick">Konumu haritada seç</button></div>
-      <div id="eOut"></div>
+      <div class="ehd" id="eHd"><span class="grip" aria-hidden="true">⋮⋮</span><i></i><b id="eTitle">SOS</b><span class="small" id="eSub"></span><button id="eReset" type="button">⟲</button><button id="eClose" type="button">–</button></div>
+      <div class="ebody" id="eBody"></div>
     </div>
     <button class="edge l" id="edgeL" aria-controls="leftCol" aria-expanded="true" title="Sol menüyü kapat ( [ )">‹</button>
     <button class="edge r" id="edgeR" aria-controls="rightCol" aria-expanded="true" title="Sağ menüyü kapat ( ] )">›</button>
@@ -491,6 +561,13 @@ details.src > div{padding:0 14px 14px}
     <section class="blk">
       <h2><span class="n">08</span>Yükselti profili<span class="aside" id="profInfo"></span></h2>
       <canvas class="chart" id="prof"></canvas>
+    </section>
+
+    <section class="blk" id="sunBlk">
+      <h2><span class="n">☀</span>Güneş, gölge ve doz<span class="aside" id="sunInfo"></span></h2>
+      <canvas class="chart" id="sunChart" style="height:96px"></canvas>
+      <table class="kv" id="sunKv" style="margin-top:8px"></table>
+      <p class="small" id="sunNote" style="margin-top:6px"></p>
     </section>
 
     <section class="blk detail" id="detail"></section>
@@ -653,7 +730,7 @@ function renderMission() {
       `Rover parking: the spot where Curiosity stayed ${b.dwell} sols (sol ${b.sol}–${b.sol_end}). Vehicle tilt measured by the rover ${nf(b.tilt, 1)}°; the surrounding 28 m averages ${nf(b.slope, 1)}°.`)}</p>`;
 }
 let mode = 'inspect';
-const layers = { base: 'ortho', units: true, crism: false, slope: false, rough: false, themis: false, cont: true, iso: true, trav: true, grid: false };
+const layers = { base: 'ortho', units: true, crism: false, slope: false, rough: false, themis: false, shade: false, cont: true, iso: true, trav: true, grid: false };
 let plan = null, walkback = null;
 
 /* geologic units: a class per 4 m cell, derived from CRISM (clay/sulfate) and HiRISE DTM morphometry seeded
@@ -771,7 +848,7 @@ function computePlan() {
       const margin = (P.limit - P.reserve) * 60 - (t + wb);
       if (-margin > worst.m) worst = { m: -margin, c, t, wb };
       far = Math.max(far, Math.hypot(cX(c) - base.X, cY(c) - base.Y));
-      prof.push({ d: dist, z: elev[c], s: slope[c], c });
+      prof.push({ d: dist, z: elev[c], s: slope[c], c, t });
     }
     tl.push({ k: 'walk', d: legT / 60 });
     if (L.to.kind === 'st') marks.push({ d: dist, st: L.to.st });
@@ -933,6 +1010,7 @@ function paint() {
   if (layers.crism && imgs.crism) { ctx.imageSmoothingEnabled = false; ctx.globalAlpha = .75; ctx.drawImage(imgs.crism, 0, 0, WW, HH); ctx.globalAlpha = 1; ctx.imageSmoothingEnabled = true; }
   if (layers.rough) ctx.drawImage(cvRough, 0, 0, WW, HH);
   if (layers.slope) ctx.drawImage(cvSlope, 0, 0, WW, HH);
+  if (layers.shade) { renderShade(); ctx.imageSmoothingEnabled = false; ctx.drawImage(cvShade, 0, 0, WW, HH); ctx.imageSmoothingEnabled = true; }
   if (layers.iso && walkback) ctx.drawImage(cvIso, 0, 0, WW, HH);
   if (layers.cont && contMinor) {
     if (view.s > .55) { ctx.strokeStyle = 'rgba(255,248,232,.22)'; ctx.lineWidth = .7 / view.s; ctx.stroke(contMinor); }
@@ -1027,7 +1105,7 @@ function drawTraverse() {
 }
 function drawRoute() {
   if (!plan) return;
-  ctx.globalAlpha = emerg && emerg.res ? .35 : 1;
+  ctx.globalAlpha = emerg && emerg.stage === 'active' && emerg.res ? .45 : 1;
   ctx.lineJoin = ctx.lineCap = 'round';
   for (const pass of [0, 1]) for (const L of plan.legs) {
     if (!L.r) continue;
@@ -1113,7 +1191,7 @@ cv.addEventListener('pointerleave', () => { $('probe').innerHTML = L('Haritanın
 function click(sx, sy) { const [X, Y] = toWorld(sx, sy); clickWorld(X, Y, sx, sy); }
 function clickWorld(X, Y, sx, sy) {
   if (X < 0 || Y < 0 || X > WW || Y > HH) return;
-  if (mode === 'pickE') { if (emerg) { emerg.pos = { X, Y }; emerg.res = null; renderEmergency(); setTimeout(computeEmergency, 20); } setMode('inspect'); return; }
+  if (mode === 'pickE') { if (emerg) emergSetPos({ X, Y }); setMode('inspect'); return; }
   if (mode === 'pickA') { ownRoute.A = { X, Y }; setMode(ownRoute.B ? 'inspect' : 'pickB'); applyOwn(); return; }
   if (mode === 'pickB') { ownRoute.B = { X, Y }; selected = 'B'; setMode('inspect'); applyOwn(); setTimeout(() => $('routeFitBtn').click(), 500); return; }
   if (mode === 'base') {
@@ -1242,6 +1320,7 @@ function renderDetail() {
 }
 function updatePanels() {
   const p = plan; if (!p) return;
+  p.env = routeEnv(); const env = p.env;
   const usable = P.limit - P.reserve;
   $('sTotal').innerHTML = `${hm(p.total).replace(` ${HR()} `, `<small> ${HR()} </small>`).replace(` ${MIN()}`, `<small> ${MIN()}</small>`)}`;
   $('sDist').innerHTML = `${nf(p.dist / 1000, 2)}<small> km</small>`;
@@ -1260,6 +1339,7 @@ function updatePanels() {
     [L('Gezginden en uzak', 'Farthest from rover'), `${nf(p.far)} m`],
     [L('Ortalama hız', 'Average speed'), p.walk ? `${nf(p.dist / 1000 / (p.walk / 60), 2)} ${L('km/sa', 'km/h')}` : '—'],
     [L('Dönüş', 'Back at rover'), `${clock(P.start + p.total)} LMST`],
+    ...(env ? [[L('Gölgede yürüyüş', 'Walking in shadow'), `${nf(env.shadeLen)} m`], [L('Tahmini doz (rota)', 'Estimated dose (route)'), `≈ ${nf(env.dose, 3)} mSv`]] : []),
   ].map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('');
   $('calcInfo').textContent = `${nf(p.ms)} ms`;
   // warnings
@@ -1273,10 +1353,16 @@ function updatePanels() {
   if (p.dist && p.roughLen / p.dist > .1) W.push(['warn', WARN, L(`Pürüzlü zemin (gator-back, bloklar, kum dalgacıkları): rotada ${nf(p.roughLen)} m, toplamın %${nf(p.roughLen / p.dist * 100)} kadarı. Sırtların üstünden değil, aradaki çukurlar boyunca yürüyün.`, `Rough ground (gator-back, blocks, sand ripples): ${nf(p.roughLen)} m of the route, about ${nf(p.roughLen / p.dist * 100)}% of it. Walk along the troughs, not over the crests.`)]);
   const sunset = medaSunset(), endT = P.start + p.total;
   if (sunset && endT > sunset - 60) W.push(['warn', WARN, L(`Dönüş ${clock(endT)}; REMS'e göre gün batımı ${clock(sunset)}. Son bir saatte gölgeler uzar, kum ile kaya ayırt etmek zorlaşır.`, `Back at ${clock(endT)}; sunset per REMS is ${clock(sunset)}. In the last hour shadows grow long and sand is harder to tell from rock.`)]);
+  if (env) {
+    if (env.night) W.push(['stop', STOP, L(`Güneş modeline göre plan gün batımından sonra sürüyor (batış ${env.rs ? clock(env.rs.set) : '—'} LMST). Çıkışı öne alın veya durak kapatın.`, `Per the sun model the plan runs past sunset (${env.rs ? clock(env.rs.set) : '—'} LMST). Start earlier or turn a stop off.`)]);
+    if (env.shadeLen >= 50) W.push(['warn', WARN, L(`Rotanın ${nf(env.shadeLen)} m'si gölgede${env.spans.length ? ' (' + env.spans.slice(0, 3).map(s => clock(s.t0) + '–' + clock(s.t1)).join(', ') + ')' : ''}: zemin daha soğuk, kaya ile kumu ayırt etmek zor. Kask lambası açık, adımlar kısa.`, `${nf(env.shadeLen)} m of the route is in shadow${env.spans.length ? ' (' + env.spans.slice(0, 3).map(s => clock(s.t0) + '–' + clock(s.t1)).join(', ') + ')' : ''}: colder ground, rock and sand harder to tell apart. Helmet lights on, short steps.`)]);
+    if (env.glareLen >= 50) W.push(['warn', WARN, L(`${nf(env.glareLen)} m boyunca alçak güneşe (< 25°) karşı yürünüyor: kamaşma, engeller geç fark edilir. Vizör gölgeliğini indirin.`, `${nf(env.glareLen)} m walking into a low sun (< 25°): glare, obstacles seen late. Lower the visor shade.`)]);
+    else if (!env.night && env.elMin < 15) W.push(['note', NOTE, L(`Güneş EVA'nın bir bölümünde ${nf(env.elMin, 0)}°'ye kadar alçalıyor: gölgeler uzun.`, `The sun drops to ${nf(env.elMin, 0)}° during part of the EVA: long shadows.`)]);
+  }
   const nextCme = upcomingCme(); if (nextCme) W.push(['note', NOTE, nextCme]);
   if (!W.some(w => w[0] !== 'note')) W.unshift(['ok', L('UYGUN', 'OK'), L('Plan tüm kısıtları sağlıyor.', 'The plan meets every constraint.')]);
   $('warn').innerHTML = W.map(([c, t, x]) => `<li><span class="tag ${c}">${t}</span><span>${x}</span></li>`).join('');
-  renderTimeline(); renderProfile(); renderRad(); renderDetail();
+  renderTimeline(); renderProfile(); renderRad(); renderSun(); renderDetail();
   $('legend').innerHTML = legendHtml();
 }
 function renderTimeline() {
@@ -1313,6 +1399,8 @@ function renderProfile() {
     const s = pr[i].s; x.strokeStyle = s > P.maxSlope ? '#c42a1e' : s > 15 ? '#d6701c' : s > 10 ? '#c99a1f' : cssVar('--ink');
     x.beginPath(); x.moveTo(X(pr[i - 1].d), Y(pr[i - 1].z)); x.lineTo(X(pr[i].d), Y(pr[i].z)); x.stroke();
   }
+  // sun / shadow strip along the route (model)
+  const env = plan.env; if (env) for (let i = 1; i < pr.length; i++) { x.fillStyle = env.lit[i] === 1 ? '#e9b949' : env.lit[i] === 2 ? '#111' : '#3d4f8a'; x.fillRect(X(pr[i - 1].d), h - Bm - 4, Math.max(1, X(pr[i].d) - X(pr[i - 1].d) + .5), 4); }
   // station marks
   let k = 1; x.font = '500 10px ' + mono; x.textBaseline = 'middle';
   for (const m of plan.marks) {
@@ -1335,13 +1423,177 @@ function renderMeda() {
   $('medaNote').textContent = L(`Curiosity REMS günlük özeti, sol ${B.meda[0].sol}–${l.sol} (${B.meda[0].terrestrial_date} – ${l.terrestrial_date}), Ls ${nf(+l.ls, 0)}°. Ölçümler bu sektörün içinden; rover şu an haritanın hemen güneyinde. Zemin sıcaklığı öğlen 0 °C'ye yaklaşırken gece −80 °C'nin altına iniyor: eldiven ve bot ısıtma bütçesi için önemli. Saatler LMST.`,
     `Curiosity REMS daily summary, sol ${B.meda[0].sol}–${l.sol} (${B.meda[0].terrestrial_date} – ${l.terrestrial_date}), Ls ${nf(+l.ls, 0)}°. Measured from within this sector; the rover is now just south of the map. Ground temperature nears 0 °C at noon and drops below −80 °C at night, which matters for the glove and boot heating budget. Times are LMST.`);
 }
+/* =============================================================
+   sun, shadow and route radiation dose
+   Sun position: Mars24 algorithm (Allison & McEwen 2000, Planet. Space Sci. 48) for the date of the latest REMS sol.
+   Shadows: ray-traced on the 4 m HiRISE DTM grid of this sector. Dose: Curiosity RAD open-ground rate scaled by
+   the cosine-weighted sky-view factor along the route. Everything here is a model estimate, not a measurement.
+   ============================================================= */
+const D2R = Math.PI / 180;
+function marsSun(dateStr) {   // solar longitude Ls, declination and equation of time (deg) at noon UTC of a date
+  const ms = Date.parse(String(dateStr).slice(0, 10) + 'T12:00:00Z'); if (!isFinite(ms)) return null;
+  const dt = ms / 864e5 + 2440587.5 + 69.184 / 86400 - 2451545.0;          // days since J2000 (TT)
+  const M = (19.3871 + 0.52402073 * dt) * D2R, aFMS = 270.3871 + 0.524038496 * dt;
+  const nuM = (10.691 + 3.0e-7 * dt) * Math.sin(M) + 0.623 * Math.sin(2 * M) + 0.050 * Math.sin(3 * M) + 0.005 * Math.sin(4 * M) + 0.0005 * Math.sin(5 * M);
+  const Ls = ((aFMS + nuM) % 360 + 360) % 360, l = Ls * D2R;
+  const eot = 2.861 * Math.sin(2 * l) - 0.071 * Math.sin(4 * l) + 0.002 * Math.sin(6 * l) - nuM;
+  const dec = Math.asin(0.42565 * Math.sin(l)) + 0.25 * D2R * Math.sin(l);
+  return { Ls, eot, dec };
+}
+const hhmm = s => { if (!s || !/\d+:\d+/.test(s)) return null; const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+let SUNC = null;
+function sunInfo() {
+  const l = B.meda && B.meda[B.meda.length - 1]; if (!l) return null;
+  if (!SUNC || SUNC.date !== l.terrestrial_date) {
+    const s = marsSun(l.terrestrial_date);
+    SUNC = s && { ...s, date: l.terrestrial_date, sol: l.sol, remsLs: +l.ls, remsRise: hhmm(l.sunrise), remsSet: hhmm(l.sunset) };
+  }
+  return SUNC;
+}
+const SITE_LAT = (B.sector.lat[0] + B.sector.lat[1]) / 2 * D2R;
+function sunAt(lmst, S) {   // elevation and azimuth (deg, clockwise from north) at an LMST time in minutes
+  const H = ((lmst / 60 + S.eot / 15) - 12) * 15 * D2R, d = S.dec, f = SITE_LAT;
+  const el = Math.asin(Math.sin(f) * Math.sin(d) + Math.cos(f) * Math.cos(d) * Math.cos(H));
+  const az = (Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(f) - Math.tan(d) * Math.cos(f)) / D2R + 180 + 360) % 360;
+  return { el: el / D2R, az };
+}
+function sunRiseSet(S) {
+  const c = -Math.tan(SITE_LAT) * Math.tan(S.dec); if (Math.abs(c) > 1) return null;
+  const H0 = Math.acos(c) / D2R / 15;
+  return { rise: (12 - H0 - S.eot / 15) * 60, set: (12 + H0 - S.eot / 15) * 60 };
+}
+let ELEV_MAX = -Infinity;
+function shadowAt(c, sun) {   // true when the DTM between this cell and the sun rises above the sun ray
+  if (sun.el <= 0) return true;
+  if (!isFinite(ELEV_MAX)) for (let k = 0; k < N; k++) if (elev[k] > ELEV_MAX) ELEV_MAX = elev[k];
+  const ex = Math.sin(sun.az * D2R), ey = -Math.cos(sun.az * D2R), tn = Math.tan(sun.el * D2R);
+  const x0 = cX(c), y0 = cY(c), z0 = elev[c] + 0.5;
+  for (let d = 4; ; d += 4) {
+    const zr = z0 + d * tn; if (zr > ELEV_MAX) return false;
+    const x = x0 + ex * d, y = y0 + ey * d; if (x < 0 || y < 0 || x >= WW || y >= HH) return false;
+    if (elev[cellOf(x, y)] > zr) return true;
+  }
+}
+function skyView(c) {   // cosine-weighted sky-view factor from 16 DTM horizon profiles out to 1.5 km (1 = open plain)
+  const x0 = cX(c), y0 = cY(c), z0 = elev[c] + 1; let s = 0;
+  for (let k = 0; k < 16; k++) {
+    const a = k / 16 * 2 * Math.PI, ex = Math.sin(a), ey = -Math.cos(a); let tmax = 0;
+    for (let d = 8; d <= 1500; d += d < 200 ? 8 : 24) {
+      const x = x0 + ex * d, y = y0 + ey * d; if (x < 0 || y < 0 || x >= WW || y >= HH) break;
+      const tt = (elev[cellOf(x, y)] - z0) / d; if (tt > tmax) tmax = tt;
+    }
+    s += Math.cos(Math.atan(tmax)) ** 2;
+  }
+  return s / 16;
+}
+function routeEnv() {
+  const p = plan, S = sunInfo(); if (!p || !S || !p.prof || p.prof.length < 2) return null;
+  const pr = p.prof, n = pr.length;
+  if (!p.svf) {   // terrain only: once per plan, every ~25 m
+    const sv = new Float32Array(n); let last = -1e9, v = 1;
+    for (let i = 0; i < n; i++) { if (pr[i].d - last >= 25 || i === n - 1) { v = skyView(pr[i].c); last = pr[i].d; } sv[i] = v; }
+    p.svf = sv;
+  }
+  const lit = new Uint8Array(n), el = new Float32Array(n), rate = RAD_SV_SOL / (24.66 * 60);   // mSv per minute on open ground
+  let shadeLen = 0, glareLen = 0, elMin = 90, elMax = -90, dose = 0, svfT = 0, tT = 0, night = false, cur = null, spans = [];
+  for (let i = 0; i < n; i++) {
+    const tm = P.start + pr[i].t / 60, sun = sunAt(tm, S); el[i] = sun.el;
+    elMin = Math.min(elMin, sun.el); elMax = Math.max(elMax, sun.el);
+    lit[i] = sun.el <= 0 ? 2 : shadowAt(pr[i].c, sun) ? 0 : 1; if (sun.el <= 0) night = true;
+    if (i) {
+      const dd = pr[i].d - pr[i - 1].d, dtm = (pr[i].t - pr[i - 1].t) / 60;
+      if (lit[i] !== 1) shadeLen += dd;
+      if (dd > 0 && sun.el > 0 && sun.el < 25) {   // walking towards a low sun: glare, harder to read the ground
+        const hd = Math.atan2(cX(pr[i].c) - cX(pr[i - 1].c), -(cY(pr[i].c) - cY(pr[i - 1].c))) / D2R;
+        if (Math.abs(((hd - sun.az) % 360 + 540) % 360 - 180) < 30) glareLen += dd;
+      }
+      dose += dtm * rate * p.svf[i]; svfT += dtm * p.svf[i]; tT += dtm;
+    }
+    if (lit[i] !== 1) { if (!cur) cur = { t0: tm, d0: pr[i].d }; cur.t1 = tm; cur.d1 = pr[i].d; } else if (cur) { spans.push(cur); cur = null; }
+  }
+  if (cur) spans.push(cur);
+  spans = spans.filter(s => s.d1 - s.d0 >= 20);
+  return { S, lit, el, shadeLen, glareLen, elMin, elMax, night, dose, doseOpen: rate * p.total, svf: tT ? svfT / tT : 1, spans,
+    s0: sunAt(P.start, S), s1: sunAt(P.start + p.total, S), rs: sunRiseSet(S) };
+}
+const azTxt = a => L(['K', 'KD', 'D', 'GD', 'G', 'GB', 'B', 'KB'], ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'])[Math.round(a / 45) % 8];
+function renderSun() {
+  const e = plan && plan.env, box = $('sunKv'); if (!box) return;
+  if (!e) { box.innerHTML = ''; $('sunNote').textContent = ''; return; }
+  const S = e.S, rs = e.rs, pct = plan.dist ? e.shadeLen / plan.dist * 100 : 0;
+  box.innerHTML = [
+    [L('Plan günü', 'Plan day'), `sol ${S.sol} · ${fmtD(S.date)} · Ls ${nf(S.Ls, 1)}°`],
+    [L('Gün doğumu – batımı (model / REMS)', 'Sunrise – sunset (model / REMS)'), `${rs ? clock(rs.rise) + '–' + clock(rs.set) : '—'} / ${S.remsRise != null ? clock(S.remsRise) + '–' + clock(S.remsSet) : '—'}`],
+    [L('Güneş: çıkış → dönüş', 'Sun: start → back'), `${nf(e.s0.el, 0)}° ${azTxt(e.s0.az)} → ${nf(e.s1.el, 0)}° ${azTxt(e.s1.az)}`],
+    [L('Güneş yüksekliği, EVA boyunca', 'Sun elevation during the EVA'), `${nf(e.elMin, 0)}° … ${nf(e.elMax, 0)}°`],
+    [L('Rotada gölgede', 'Route in shadow'), `${nf(e.shadeLen)} m (%${nf(pct)})${e.spans.length ? ' · ' + e.spans.slice(0, 3).map(s => clock(s.t0) + '–' + clock(s.t1)).join(', ') : ''}`],
+    [L('Alçak güneşe karşı yürüyüş', 'Walking into a low sun'), `${nf(e.glareLen)} m`],
+    [L('Rota dozu (arazi gölgelemesiyle)', 'Route dose (with terrain shielding)'), `≈ ${nf(e.dose, 3)} mSv`],
+    [L('Ortalama gök görüş faktörü', 'Mean sky-view factor'), `%${nf(e.svf * 100, 0)}`],
+  ].map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('');
+  $('sunInfo').textContent = L('model', 'model');
+  $('sunNote').textContent = L(`Güneş konumu Mars24 algoritmasıyla (Allison & McEwen 2000), son REMS solünün tarihi için hesaplandı; doğuş/batış saatleri REMS ile karşılaştırma içindir. Gölgeler 4 m HiRISE DTM üzerinde ışın izlemeyle, yalnızca bu 2,4 × 5,2 km sektörün içinden; krater kenarı ve Mount Sharp'ın üst kısmı hesaba katılmaz. Doz: RAD'ın açık arazi değeri (${nf(RAD_SV_SOL, 2)} mSv/sol) rota boyunca kosinüs ağırlıklı gök görüş faktörüyle ölçeklendi; giysi zırhı, zemin albedosu ve SEP olayları dahil değil. Tahmindir, ölçüm değildir.`,
+    `Sun position from the Mars24 algorithm (Allison & McEwen 2000) for the date of the latest REMS sol; sunrise/sunset are shown next to REMS as a check. Shadows are ray-traced on the 4 m HiRISE DTM, inside this 2.4 × 5.2 km sector only; the crater rim and upper Mount Sharp are not included. Dose: the RAD open-ground rate (${nf(RAD_SV_SOL, 2)} mSv/sol) scaled by the cosine-weighted sky-view factor along the route; suit shielding, ground albedo and SEP events are not included. An estimate, not a measurement.`);
+  // chart: sun elevation over the EVA, shadow spans shaded
+  const c = $('sunChart'), r = c.getBoundingClientRect(), dp = window.devicePixelRatio || 1; if (!r.width) return;
+  c.width = r.width * dp; c.height = r.height * dp; const x = c.getContext('2d'); x.setTransform(dp, 0, 0, dp, 0, 0);
+  const w = r.width, h = r.height, PL = 30, Rr = 6, T = 6, Bm = 16, t0 = P.start, t1 = P.start + Math.max(plan.total, 30);
+  const X = t => PL + (t - t0) / (t1 - t0) * (w - PL - Rr), emax = Math.max(30, Math.ceil(e.elMax / 15) * 15), Y = v => T + (1 - Math.max(0, v) / emax) * (h - T - Bm);
+  x.clearRect(0, 0, w, h);
+  const ink3 = cssVar('--ink-3'), rule = cssVar('--rule'), mono = cssVar('--mono');
+  x.font = '10px ' + mono; x.fillStyle = ink3; x.strokeStyle = rule; x.lineWidth = 1; x.textAlign = 'right'; x.textBaseline = 'middle';
+  for (let v = 0; v <= emax; v += 15) { x.beginPath(); x.moveTo(PL, Y(v) + .5); x.lineTo(w - Rr, Y(v) + .5); x.stroke(); x.fillText(v + '°', PL - 4, Y(v)); }
+  x.textAlign = 'center'; x.textBaseline = 'top';
+  for (let m = Math.ceil(t0 / 60) * 60; m <= t1; m += 60) x.fillText(clock(m).slice(0, 2), X(m), h - Bm + 3);
+  x.fillStyle = 'rgba(61,79,138,.35)';
+  for (const s of e.spans) x.fillRect(X(s.t0), T, Math.max(2, X(s.t1) - X(s.t0)), h - T - Bm);
+  x.beginPath(); for (let t = t0, k = 0; t <= t1; t += 5, k++) { const v = sunAt(t, e.S).el; k ? x.lineTo(X(t), Y(v)) : x.moveTo(X(t), Y(v)); }
+  x.strokeStyle = '#e0a526'; x.lineWidth = 2; x.stroke();
+  if (rs && rs.set > t0 && rs.set < t1) { x.strokeStyle = cssVar('--stop') || '#c42a1e'; x.setLineDash([3, 3]); x.beginPath(); x.moveTo(X(rs.set) + .5, T); x.lineTo(X(rs.set) + .5, h - Bm); x.stroke(); x.setLineDash([]); }
+}
+/* shadow map layer: one sweep over the grid towards the sun (O(N)) */
+const cvShade = gridCanvas(); let shadeKey = '', shadeT = P.start;
+function renderShade() {
+  const S = sunInfo(); if (!S || !elev[0] && !elev[N >> 1]) return;
+  const key = Math.round(shadeT) + '|' + S.date; if (key === shadeKey) return; shadeKey = key;
+  const sun = sunAt(shadeT, S), x = cvShade.getContext('2d'), im = x.createImageData(GW, GH), d = im.data;
+  if (sun.el <= 0) { for (let c = 0; c < N; c++) { d[c * 4] = 10; d[c * 4 + 1] = 12; d[c * 4 + 2] = 30; d[c * 4 + 3] = 170; } x.putImageData(im, 0, 0); return; }
+  const ex = Math.sin(sun.az * D2R), ey = -Math.cos(sun.az * D2R), tn = Math.tan(sun.el * D2R), Hs = new Float32Array(N);
+  if (Math.abs(ex) / CW >= Math.abs(ey) / CH) {         // sweep columns, starting on the sun side
+    const di = ex > 0 ? 1 : -1, dj = (ey / CH) / (Math.abs(ex) / CW), drop = CW / Math.abs(ex) * tn;
+    for (let n = 0; n < GW; n++) {
+      const i = di > 0 ? GW - 1 - n : n, iu = i + di;
+      for (let j = 0; j < GH; j++) {
+        const c = j * GW + i, z = elev[c], ju = j + dj, j0 = Math.floor(ju);
+        if (iu < 0 || iu >= GW || j0 < 0 || j0 >= GH) { Hs[c] = z; continue; }
+        const j1 = Math.min(GH - 1, j0 + 1), f = ju - j0;
+        Hs[c] = Math.max(z, Hs[j0 * GW + iu] * (1 - f) + Hs[j1 * GW + iu] * f - drop);
+      }
+    }
+  } else {                                              // sweep rows
+    const dj = ey > 0 ? 1 : -1, di = (ex / CW) / (Math.abs(ey) / CH), drop = CH / Math.abs(ey) * tn;
+    for (let n = 0; n < GH; n++) {
+      const j = dj > 0 ? GH - 1 - n : n, ju = j + dj;
+      for (let i = 0; i < GW; i++) {
+        const c = j * GW + i, z = elev[c], iu = i + di, i0 = Math.floor(iu);
+        if (ju < 0 || ju >= GH || i0 < 0 || i0 >= GW) { Hs[c] = z; continue; }
+        const i1 = Math.min(GW - 1, i0 + 1), f = iu - i0;
+        Hs[c] = Math.max(z, Hs[ju * GW + i0] * (1 - f) + Hs[ju * GW + i1] * f - drop);
+      }
+    }
+  }
+  for (let c = 0; c < N; c++) if (Hs[c] - elev[c] > .4) { const o = c * 4; d[o] = 18; d[o + 1] = 26; d[o + 2] = 70; d[o + 3] = 135; }
+  x.putImageData(im, 0, 0);
+}
+
 const RAD_SV_SOL = 0.64;   // mSv per sol, Curiosity RAD at Gale (Hassler et al. 2014, Science 343)
 function renderRad() {
   const evaH = plan ? plan.total / 60 : 0, dose = RAD_SV_SOL / 24.66 * evaH;
   const d = B.donki;
   $('radKv').innerHTML = [
     [L('Yüzeyde GCR doz eşdeğeri (RAD, Gale)', 'Surface GCR dose equivalent (RAD, Gale)'), `${nf(RAD_SV_SOL, 2)} mSv/sol`],
-    [L('Bu EVA boyunca (açıkta)', 'During this EVA (exposed)'), `≈ ${nf(dose, 3)} mSv`],
+    [L('Bu EVA, açık düz arazi varsayımı', 'This EVA, open flat ground'), `≈ ${nf(dose, 3)} mSv`],
+    ...(plan && plan.env ? [[L('Bu EVA, rota boyunca arazi gölgelemesiyle (model)', 'This EVA, with terrain shielding along the route (model)'), `≈ ${nf(plan.env.dose, 3)} mSv · %${nf(plan.env.dose / 600 * 100, 3)} ${L('kariyer sınırının', 'of the career limit')}`]] : []),
     [L('NASA kariyer sınırı (2022)', 'NASA career limit (2022)'), '600 mSv'],
     [`${L('SEP olayı', 'SEP events')}, ${fmtD(d.window[0])} – ${fmtD(d.window[1])}`, d.sep.length ? `${d.sep.length} ${L('olay', 'events')}` : L('yok', 'none')],
     [L('Hızlı CME (≥ 800 km/s), aynı dönem', 'Fast CMEs (≥ 800 km/s), same period'), `${d.fastCme.length}`],
@@ -1444,6 +1696,7 @@ function legendHtml() {
   let h = '';
   if (layers.units) h += `<div class="t">${L('Birimler (CRISM + DTM)', 'Units (CRISM + DTM)')}</div>` + UNITS.map(u => `<div class="sw"><i style="background:rgba(${u.c},.55);border:1.5px ${u.dash ? 'dashed' : 'solid'} rgb(${u.c})"></i>${uName(u)}</div>`).join('');
   if (layers.crism) h += `<div class="t">${L('CRISM göstergeleri', 'CRISM indicators')}</div><div class="sw"><i style="background:#e03030"></i>${L('sülfat', 'sulfate')} (SINDEX2)</div><div class="sw"><i style="background:#30c030"></i>${L('Fe/Mg kil', 'Fe/Mg clay')} (D2300)</div><div class="sw"><i style="background:#3050e0"></i>${L('su bağı', 'hydration')} (BD1900)</div>`;
+  if (layers.shade) h += `<div class="t">${L('Güneş gölgesi', 'Sun shadow')} · ${clock(shadeT)} LMST</div><div class="sw"><i style="background:rgba(18,26,70,.55)"></i>${L('gölgede (model)', 'in shadow (model)')}</div>`;
   if (layers.slope) h += `<div class="t">${L('Zemin eğimi', 'Ground slope')}</div><div class="sw"><i style="background:rgba(236,196,70,.5)"></i>10–15°</div>${P.maxSlope > 15 ? `<div class="sw"><i style="background:rgba(222,120,30,.7)"></i>15–${P.maxSlope}°</div>` : ''}<div class="sw"><i style="background:repeating-linear-gradient(135deg,rgba(196,42,30,.55) 0 3px,rgba(120,10,6,.95) 3px 4.5px)"></i>&gt; ${P.maxSlope}° ${L('yasak', 'no-go')}</div>`;
   if (layers.rough) h += `<div class="t">${L('Pürüzlülük (RMS)', 'Roughness (RMS)')}</div><div class="ramp" style="background:linear-gradient(90deg,rgba(40,96,190,.2),rgba(40,96,190,.85))"></div><div class="ends"><span>0,3 m</span><span>0,9 m</span></div><div class="sw"><i style="background:rgb(20,40,120)"></i>&gt; ${nf(P.maxRough, 2)} m ${L('yasak', 'no-go')}</div>`;
   if (layers.themis) h += `<div class="t">${L('THEMIS gece IR', 'THEMIS night IR')}</div><div class="ramp" style="background:linear-gradient(90deg,#261a40,#5c2878,#b43c5a,#ec802e,#fcde78)"></div><div class="ends"><span>${B.themis.lo} ${L('toz, kum', 'dust, sand')}</span><span>${B.themis.hi} ${L('kaya', 'rock')}</span></div>`;
@@ -1527,10 +1780,13 @@ bindParam('pSuit', 'oSuit', 'v0', v => `${nf(v, 1)} ${L('km/sa', 'km/h')}`);
 bindParam('pLimit', 'oLimit', 'limit', v => hm(v));
 bindParam('pReserve', 'oReserve', 'reserve', v => `${v} ${MIN()}`);
 bindParam('pStart', 'oStart', 'start', v => clock(v), false);
+{ const st = $('shadeT'), so = $('oShadeT'); const set = v => { shadeT = +v; st.value = shadeT; so.textContent = clock(shadeT); };
+  set(P.start); st.addEventListener('input', () => { set(st.value); if (layers.shade) { $('legend').innerHTML = legendHtml(); draw(); } });
+  $('pStart').addEventListener('input', () => { set(P.start); if (layers.shade) draw(); }); }
 $('pLimit').addEventListener('change', () => { renderIso(); draw(); });
 $('pReserve').addEventListener('change', () => { renderIso(); draw(); });
 $('baseSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; layers.base = b.dataset.v; [...$('baseSeg').children].forEach(x => x.classList.toggle('on', x === b)); draw(); });
-[['lUnits', 'units'], ['lCrism', 'crism'], ['lSlope', 'slope'], ['lRough', 'rough'], ['lThemis', 'themis'], ['lCont', 'cont'], ['lIso', 'iso'], ['lTrav', 'trav'], ['lGrid', 'grid']].forEach(([id, k]) => {
+[['lUnits', 'units'], ['lCrism', 'crism'], ['lSlope', 'slope'], ['lRough', 'rough'], ['lThemis', 'themis'], ['lShade', 'shade'], ['lCont', 'cont'], ['lIso', 'iso'], ['lTrav', 'trav'], ['lGrid', 'grid']].forEach(([id, k]) => {
   $(id).addEventListener('change', e => { layers[k] = e.target.checked; $('legend').innerHTML = legendHtml(); draw(); });
 });
 $('addStBtn').onclick = () => setMode(mode === 'add' ? 'inspect' : 'add');
@@ -1567,7 +1823,8 @@ window.addEventListener('keydown', e => {
   if (e.key === '[') setPanel('L', !panelOpen('L')); if (e.key === ']') setPanel('R', !panelOpen('R'));
 });
 document.querySelector('.app').addEventListener('transitionend', e => { if (e.target === e.currentTarget && e.propertyName === 'grid-template-columns') afterPanel(); });
-try { for (const s of ['L', 'R']) if (localStorage.getItem('marswalk-panel-' + s) === '0') setPanel(s, false); } catch (e) {}
+// both side panels start closed; the guide (offered after the intro) opens them
+setPanel('L', false); setPanel('R', false);
 /* ---------- language: static text dictionary (TR -> EN) ---------- */
 const I18N = {
   "Gale krateri · Mount Sharp": "Gale crater · Mount Sharp",
@@ -1633,6 +1890,10 @@ const I18N = {
   "CRISM mineral göstergeleri": "CRISM mineral indicators",
   "MRO CRISM MTRDR özet parametreleri, 18–36 m · R sülfat, Y kil, M su": "MRO CRISM MTRDR summary parameters, 18–36 m · R sulfate, G clay, B water",
   "Eğim sınıfları": "Slope classes",
+  "Güneş gölgesi": "Sun shadows",
+  "HiRISE DTM üzerinde ışın izleme · Mars24 güneş konumu · saat": "Ray-traced on the HiRISE DTM · Mars24 sun position · time",
+  "Güneş, gölge ve doz": "Sun, shadow and dose",
+  "Gölge saati": "Shadow time",
   "HiRISE DTM mozaiği, 1 m · USGS / MSL Gale v3": "HiRISE DTM mosaic, 1 m · USGS / MSL Gale v3",
   "Pürüzlülük, bloklu zemin": "Roughness, blocky ground",
   "Aynı DTM'den türetildi (10 m yüksek geçiren)": "Derived from the same DTM (10 m high-pass)",
@@ -1743,16 +2004,28 @@ if (LANG === 'en') applyStatic();
 /* =============================================================
    emergency mode: fastest route from the astronaut to the nearest shelter
    ============================================================= */
-let emerg = null;           // { type, pos:{X,Y}, res }
+const sosUI = { open: false, pos: null };   // pos = user's spot in map px (null: default, top centre)
+let emerg = null;   // { stage:'select'|'confirm'|'active', type, pos:{X,Y}, last:{pos,el}|null, el:EVA minutes (simulated clock), res }
 const SHELTERS = (B.shelters || []).map((s, i) => ({ ...s, X: s.x * KX, Y: s.y, i }));
+/* SOS scenario types (mission simulation). f = walking-time factor (planning assumption), o2 = oxygen-use factor after
+   the event (simulation), targets: 'rover' = pressurised cabin first, 'all' = a natural shelter may win (radiation). */
 const ETYPES = {
-  dust: { tr: 'Toz fırtınası', en: 'Dust storm', targets: 'rover' },
-  sep: { tr: 'Radyasyon (SEP)', en: 'Radiation (SEP)', targets: 'all' },
-  suit: { tr: 'Giysi arızası', en: 'Suit fault', targets: 'rover' },
+  health: { tr: 'Astronot sağlık sorunu', en: 'Crew medical problem', s: ['yardımlı yürüyüş, hız ×0,67', 'assisted walk, speed ×0.67'], targets: 'rover', f: 1.5, o2: 1.15 },
+  comms: { tr: 'İletişim kaybı', en: 'Loss of communication', s: ['son bilinen konumdan', 'from last known position'], targets: 'rover', f: 1, o2: 1 },
+  vehicle: { tr: 'Araç arızası', en: 'Rover fault', s: ['gezgin sizi alamaz', 'rover cannot pick you up'], targets: 'rover', f: 1, o2: 1 },
+  oxygen: { tr: 'Oksijen sistemi sorunu', en: 'Oxygen system problem', s: ['tüketim ×2 varsayımı', 'consumption ×2 assumed'], targets: 'rover', f: 1, o2: 2 },
+  terrain: { tr: 'Tehlikeli arazi', en: 'Hazardous terrain', s: ['sıkı eğim sınırı (−4°)', 'stricter slope limit (−4°)'], targets: 'rover', f: 1.2, o2: 1, lim: 'strict' },
+  dust: { tr: 'Toz fırtınası', en: 'Dust storm', s: ['görüş düşük, hız ×0,8', 'low visibility, speed ×0.8'], targets: 'rover', f: 1.25, o2: 1 },
+  sep: { tr: 'Radyasyon (SEP)', en: 'Radiation (SEP)', s: ['siper veya kabin', 'shelter or cabin'], targets: 'all', f: 1, o2: 1 },
+  other: { tr: 'Diğer', en: 'Other', s: ['gezgine dönüş', 'return to the rover'], targets: 'rover', f: 1, o2: 1 },
 };
+const ETYPE_ORDER = ['health', 'comms', 'vehicle', 'oxygen', 'terrain', 'other', 'dust', 'sep'];
+const O2SIM = { cap: 480 };   // SIMULATION: nominal suit oxygen for 8 h at normal use; not a real suit reading
+const etype = () => ETYPES[emerg && emerg.type] || ETYPES.other;
+const etName = k => { const t = ETYPES[k] || ETYPES.other; return L(t.tr, t.en); };
 function fieldFrom(s, relax) {     // seconds to walk from cell s to every cell (forward), with predecessor map
   const d = new Float64Array(N).fill(Infinity), pr = new Int32Array(N).fill(-1), cl = new Uint8Array(N), H = new Heap(N * 4);
-  const ms = P.maxSlope + (relax ? 6 : 0), mr = P.maxRough + (relax ? .4 : 0);
+  const ms = P.maxSlope + (relax === true ? 6 : relax === 'strict' ? -4 : 0), mr = P.maxRough + (relax === true ? .4 : relax === 'strict' ? -.25 : 0);
   // the astronaut is already standing here: the first ~32 m out of a steep spot are walked with care, limits waived
   const si = s % GW, sj = (s / GW) | 0;
   const bad = c => (slope[c] > ms || rough[c] > mr) && (Math.abs(c % GW - si) > 8 || Math.abs(((c / GW) | 0) - sj) > 8);
@@ -1783,21 +2056,24 @@ const compass = (dx, dy) => {
   const a = (Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360, k = Math.round(a / 45) % 8;
   return L(['K', 'KD', 'D', 'GD', 'G', 'GB', 'B', 'KB'], ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'])[k];
 };
+const emergOpts = (F, cands) => cands.map(t => { const c = reach(F, cellOf(t.X, t.Y)); return { ...t, cell: c, t: c >= 0 ? F.d[c] : Infinity }; }).filter(o => isFinite(o.t));
 function computeEmergency() {
   if (!emerg) return;
-  const t0 = performance.now(), sc = cellOf(emerg.pos.X, emerg.pos.Y);
-  const cands = [{ kind: 'rover', X: base.X, Y: base.Y, block: 1 }];
-  if (ETYPES[emerg.type].targets === 'all') for (const s of SHELTERS) cands.push({ kind: 'shelter', ...s });
-  let relaxed = false, F = fieldFrom(sc, false);
-  let opts = cands.map(t => { const c = reach(F, cellOf(t.X, t.Y)); return { ...t, cell: c, t: c >= 0 ? F.d[c] : Infinity }; }).filter(o => isFinite(o.t));
-  if (!opts.length) { relaxed = true; F = fieldFrom(sc, true); opts = cands.map(t => { const c = reach(F, cellOf(t.X, t.Y)); return { ...t, cell: c, t: c >= 0 ? F.d[c] : Infinity }; }).filter(o => isFinite(o.t)); }
+  const ty = etype(), t0 = performance.now(), sc = cellOf(emerg.pos.X, emerg.pos.Y);
+  const cands = [{ kind: 'rover', X: base.X, Y: base.Y, block: 1 }, ...SHELTERS.map(s => ({ kind: 'shelter', ...s }))];
+  let lim = ty.lim === 'strict' ? 'strict' : false, F = fieldFrom(sc, lim), opts = emergOpts(F, cands), relaxed = false, strictFallback = false;
+  if (lim === 'strict' && !opts.some(o => o.kind === 'rover')) { strictFallback = true; lim = false; F = fieldFrom(sc, false); opts = emergOpts(F, cands); }
+  if (!opts.length) { relaxed = true; F = fieldFrom(sc, true); opts = emergOpts(F, cands); }
   opts.sort((a, b) => a.t - b.t);
-  // A natural shelter only blocks part of the sky, the cabin blocks all of it: take a shelter only when it is
-  // clearly faster (>= 10 min and >= 40 % sooner than the rover); otherwise head for the rover.
   const rover = opts.find(o => o.kind === 'rover'), sh = opts.find(o => o.kind === 'shelter');
-  let best = opts[0];
-  if (rover && sh) best = (sh.t < rover.t * 0.6 && rover.t - sh.t >= 600) ? sh : rover;
-  const res = { relaxed, opts: [best, ...opts.filter(o => o !== best)].slice(0, 4), rover, ms: performance.now() - t0, why: rover && sh && best === sh ? 'faster' : rover && sh ? 'cabin' : '' };
+  let best, why = '';
+  if (ty.targets === 'all') {
+    // A natural shelter only blocks part of the sky, the cabin blocks all of it: take a shelter only when it is
+    // clearly faster (>= 10 min and >= 40 % sooner than the rover); otherwise head for the rover.
+    best = opts[0];
+    if (rover && sh) { best = (sh.t < rover.t * 0.6 && rover.t - sh.t >= 600) ? sh : rover; why = best === sh ? 'faster' : 'cabin'; }
+  } else { best = rover || sh; if (!rover && sh) why = 'noRover'; }   // the cabin is the only pressurised place
+  const res = { relaxed, strict: lim === 'strict', strictFallback, opts: best ? [best, ...opts.filter(o => o !== best)].slice(0, 4) : [], rover, nearest: opts[0], ms: performance.now() - t0, why };
   if (best) {
     const path = []; for (let c = best.cell; c !== -1; c = F.pr[c]) path.push(c); path.reverse();
     let dist = 0, up = 0, maxS = 0;
@@ -1806,82 +2082,269 @@ function computeEmergency() {
   }
   emerg.res = res;
   renderEmergency(); draw();
+  if (emerg.fit) { emerg.fit = false; emergFit(); }
 }
 function shelterName(o) { return o.kind === 'rover' ? L('Gezgin (basınçlı kabin)', 'Rover (pressurised cabin)') : L(`Doğal siper ${o.i + 1}`, `Natural shelter ${o.i + 1}`); }
 function shieldTxt(o) { return o.kind === 'rover' ? L('tam koruma', 'full protection') : L(`arazi gökyüzünün %${nf(o.block * 100)}'ini kapatıyor`, `terrain blocks ${nf(o.block * 100)}% of the sky`); }
-function renderEmergency() {
-  const box = $('emerg'); if (!emerg) { box.hidden = true; return; }
-  box.hidden = false;
-  [...$('eType').children].forEach(b => b.classList.toggle('on', b.dataset.v === emerg.type));
-  $('ePos').textContent = `${latTxt(emerg.pos.Y, 4)} ${nf(lonOf(emerg.pos.X), 4)}° ${EAST()}`;
-  const r = emerg.res, out = $('eOut');
-  if (!r) { out.innerHTML = `<p class="small">${L('hesaplanıyor…', 'computing…')}</p>`; return; }
-  if (!r.best) { out.innerHTML = `<p class="estop">${L('Bu noktadan yürüyerek ulaşılabilir bir korunak yok. Yerinde kalın ve gezgini size yönlendirin.', 'No shelter reachable on foot from here. Stay put and send the rover to you.')}</p>`; return; }
-  const b = r.best, dx = cX(b.cell) - emerg.pos.X, dy = cY(b.cell) - emerg.pos.Y;
-  const note = {
-    dust: L('Görüş hızla düşebilir. İkili yürüyün, aradaki mesafe 5 m\'yi aşmasın; rotayı kask ekranından izleyin.', 'Visibility can drop fast. Walk as a pair, no more than 5 m apart, and follow the route on the helmet display.'),
-    sep: L('SEP olayında doz dakikalar içinde yükselir. Siperde yamaca yaslanın, gökyüzüne açık yüzeyi azaltın; gezgin kabini daha iyi korur, mümkünse oraya geçin.', 'In an SEP event the dose rises within minutes. At the shelter, lean into the slope to cut open sky; the rover cabin protects better, move there when you can.'),
-    suit: L('Giysi arızasında tek güvenli yer gezgin. Tüm duraklar iptal; eşiniz önden yürüsün.', 'With a suit fault the rover is the only safe place. Cancel all stops; your partner leads.'),
-  }[emerg.type];
-  out.innerHTML = `
-    <div class="ebig"><span>${shelterName(b)}</span><b>${hm(b.t / 60)}</b></div>
+// minutes into the current plan at the route sample nearest to pos (null when the point is off the route)
+function planTimeAt(pos) {
+  if (!plan || !plan.prof || !plan.prof.length) return null;
+  let best = null, bd = Infinity;
+  for (const p of plan.prof) { const d = Math.hypot(cX(p.c) - pos.X, cY(p.c) - pos.Y); if (d < bd) { bd = d; best = p; } }
+  return bd < 80 && best.t != null ? { t: best.t / 60, d: best.d } : null;
+}
+const gridTxt = p => `${L('D', 'E')}${String(Math.max(0, Math.round(p.X))).padStart(4, '0')} ${L('K', 'N')}${String(Math.max(0, Math.round(HH - p.Y))).padStart(4, '0')}`;
+const posTxt = p => `${latTxt(p.Y, 4)} · ${nf(lonOf(p.X), 4)}° ${EAST()}`;
+const SIM = () => `<span class="sim">${L('SİMÜLASYON', 'SIMULATION')}</span>`;
+// numbers shared by the info table and the plan; all clock / oxygen values are simulated
+function emergCalc() {
+  const ty = etype(), r = emerg.res, el = Math.max(0, Math.min(P.limit, emerg.el));
+  const o2Now = Math.max(0, O2SIM.cap - el);                      // minutes of oxygen at normal use
+  const walk = r && r.best ? r.best.t / 60 * ty.f : null;         // minutes to the target, with the scenario factor
+  const arrive = walk != null ? 2 + walk : null;                  // T+ minutes (2 min to stop work and turn round)
+  const o2Arr = arrive != null ? o2Now - arrive * ty.o2 : null;   // oxygen left at arrival (normal-use minutes)
+  return { ty, el, o2Now, o2Pct: o2Now / O2SIM.cap * 100, o2Run: o2Now / ty.o2, walk, arrive, o2Arr, left: P.limit - el };
+}
+function routeTxt() {
+  if (!plan || !plan.seq || !plan.seq.length) return L('aktif rota yok', 'no active route');
+  const nm = routeMode === 'preset' ? `${eva.label} · ${L(eva.title, eva.titleEn)}` : L('Kendi rotan (A → B)', 'Own route (A → B)');
+  const pt = planTimeAt(emerg.pos), nx = pt ? plan.marks.find(m => m.d > pt.d + 1) : null;
+  return `${nm}<br>${plan.seq.length} ${L('durak', 'stops')} · ${nf(plan.dist / 1000, 2)} km · ${hm(plan.total)}${nx ? `<br>${L('sıradaki durak', 'next stop')}: ${nx.st.name}` : ''}${pt ? '' : `<br>${L('astronot rota üzerinde değil', 'astronaut is off the route')}`}`;
+}
+function emergInfoHtml() {
+  const c = emergCalc(), r = emerg.res, comms = emerg.type === 'comms', e = elev[cellOf(emerg.pos.X, emerg.pos.Y)];
+  const near = r && r.nearest ? `${shelterName(r.nearest)} · ${hm(r.nearest.t / 60 * c.ty.f)} ${L('yürüme', 'walk')}` : r ? L('yürüyerek ulaşılamıyor', 'not reachable on foot') : L('hesaplanıyor…', 'computing…');
+  const last = emerg.last ? `${posTxt(emerg.last.pos)}<br>${gridTxt(emerg.last.pos)} · EVA +${hm(emerg.last.el)}` : L('— (ilk konum kaydı)', '— (first position fix)');
+  return `<table class="info">
+    <tr><td>${comms ? L('Şu anki konum', 'Current position') : L('Astronot konumu', 'Astronaut position')}</td><td>${comms ? L('bilinmiyor (iletişim yok)<br>plan son bilinen konumdan', 'unknown (no comms)<br>plan uses last known fix') + '<br>' : ''}${posTxt(emerg.pos)}<br>${gridTxt(emerg.pos)} · ${nf(e, 0)} m</td></tr>
+    <tr><td>${L('Son bilinen konum', 'Last known position')}</td><td>${last}</td></tr>
+    <tr><td>${L('EVA süresi (geçen)', 'EVA time (elapsed)')} ${SIM()}</td><td>${hm(c.el)}</td></tr>
+    <tr><td>${L('Kalan EVA süresi', 'EVA time remaining')}</td><td class="${c.left - P.reserve < 0 ? 'warnv' : ''}">${hm(Math.max(0, c.left))} · ${L('yedek', 'reserve')} ${hm(P.reserve)}</td></tr>
+    <tr><td>${L('Oksijen rezervi', 'Oxygen reserve')} ${SIM()}</td><td>%${nf(c.o2Pct, 0)} · ≈ ${hm(c.o2Run)}${c.ty.o2 !== 1 ? ` (×${nf(c.ty.o2, 2)} ${L('tüketim', 'use')})` : ''}<div class="o2bar"><i style="width:${Math.max(0, Math.min(100, c.o2Pct))}%"></i></div></td></tr>
+    <tr><td>${L('En yakın güvenli istasyon', 'Nearest safe station')}</td><td>${near}</td></tr>
+    <tr><td>${L('Mevcut rota', 'Current route')}</td><td>${routeTxt()}</td></tr>
+  </table>`;
+}
+function emergSteps(c) {
+  const r = emerg.res, b = r.best, w = c.walk;
+  const imm = {
+    health: L('Eş astronot yanına gelir: bilinç, giysi basıncı ve yaralanma kontrolü; eşlik ederek yürüyün.', 'Partner moves in: check consciousness, suit pressure and injury; walk together, assisted.'),
+    comms: L('Telsiz ve yedek kanal denenir. Yanıt yoksa kayıp-iletişim kuralı (senaryo): planlı rotayı bırak, gezgine yürü.', 'Try radio and backup channel. With no answer, loss-of-comms rule (scenario): leave the plan, walk to the rover.'),
+    vehicle: L('Gezgin sürülemiyor, sizi almaya gelemez. Kabinin basınçlı kaldığı varsayılır; yürüyerek dönülür.', 'The rover cannot drive to you. The cabin is assumed to hold pressure; walk back.'),
+    oxygen: L('Yedek besleme moduna geç, eforu düşür; bu simülasyonda tüketim iki katına çıkıyor.', 'Switch to backup supply and cut effort; this simulation doubles oxygen use.'),
+    terrain: L('Dur, sağlam zemine geri çekil. Dönüş rotası sıkı eğim sınırıyla hesaplandı.', 'Stop and step back onto firm ground. The return route uses a stricter slope limit.'),
+    dust: L('Eşler arası mesafe 5 m\'yi aşmasın; rotayı kask ekranından izleyin.', 'Stay within 5 m of each other and follow the route on the helmet display.'),
+    sep: L('Gökyüzüne açık yüzeyi azaltın; en yakın siper veya kabine yönelin.', 'Cut exposure to open sky and head for the nearest shelter or the cabin.'),
+    other: L('Durum değerlendirilir; gerekirse güvenli dönüş başlatılır.', 'Assess the situation; start the safe return if needed.'),
+  }[emerg.type || 'other'];
+  const st = [
+    [0, L('SOS onaylandı: tür, konum ve saat kaydedildi (simülasyon, hiçbir yere iletilmez).', 'SOS confirmed: type, position and time logged (simulation, nothing is transmitted).')],
+    [0, imm],
+    [2, L('Kalan duraklar iptal; güvenli dönüş rotasına başla', 'Remaining stops cancelled; start the safe return route') + ` (${compass(cX(b.cell) - emerg.pos.X, cY(b.cell) - emerg.pos.Y)}).`],
+  ];
+  if (w > 8) st.push([2 + w / 2, L('Rotanın yarısı: konum, eş ve oksijen kontrolü.', 'Halfway: check position, partner and oxygen.')]);
+  st.push([2 + w, `${shelterName(b)}: ${L('varış', 'arrival')}.`, 1]);
+  if (b.kind === 'shelter') st.push([2 + w, L('Olay geçince gezgin kabinine devam.', 'Once the event passes, continue to the rover cabin.')]);
+  return st;
+}
+function emergPlanHtml() {
+  const r = emerg.res;
+  if (!r) return `<p class="small">${L('güvenli dönüş rotası hesaplanıyor…', 'computing the safe return route…')}</p>`;
+  if (!r.best) return `<p class="estop">${L('Bu noktadan yürüyerek ulaşılabilir bir güvenli nokta yok. Yerinde kalın; senaryoda gezginin size gelmesi gerekir.', 'No safe point reachable on foot from here. Stay put; in this scenario the rover has to come to you.')}</p>`;
+  const c = emergCalc(), b = r.best, dx = cX(b.cell) - emerg.pos.X, dy = cY(b.cell) - emerg.pos.Y;
+  const evaArr = c.el + c.arrive, o2ok = c.o2Arr > 0, evaok = evaArr <= P.limit;
+  const notes = [];
+  if (c.ty.f !== 1) notes.push(L(`süre, yürüme modeline ×${nf(c.ty.f, 2)} senaryo payı eklenerek verildi`, `times include a ×${nf(c.ty.f, 2)} scenario factor on the walking model`));
+  if (r.why === 'cabin') notes.push(L('en yakın doğal siper belirgin hızlı değil, tam koruma için gezgine', 'the nearest natural shelter is not much faster, so head for full protection in the rover'));
+  if (r.why === 'faster') notes.push(L('gezgin çok uzak; önce siper, olay geçince gezgine', 'the rover is too far; shelter first, rover once the event passes'));
+  if (r.why === 'noRover') notes.push(L('gezgine yürüyerek yol yok; en yakın doğal sipere', 'no walkable path to the rover; go to the nearest natural shelter'));
+  if (r.strict) notes.push(L(`eğim sınırı ${P.maxSlope - 4}°, pürüzlülük ${nf(P.maxRough - .25, 2)} m ile hesaplandı`, `computed with slope limit ${P.maxSlope - 4}° and roughness ${nf(P.maxRough - .25, 2)} m`));
+  if (r.strictFallback) notes.push(L('sıkı sınırla yol yoktu, normal sınırlar kullanıldı', 'no path within the stricter limits; normal limits used'));
+  if (r.relaxed) notes.push(L('normal sınırlarla yol yoktu, eğim ve pürüzlülük sınırı gevşetildi', 'no path within normal limits; slope and roughness limits relaxed'));
+  return `
+    <div class="ebig"><span>${shelterName(b)}</span><b>${hm(c.walk)}</b></div>
     <div class="egrid">
       <div><i>${L('Mesafe', 'Distance')}</i>${nf(r.dist)} m</div>
       <div><i>${L('Yön', 'Heading')}</i>${compass(dx, dy)}</div>
       <div><i>${L('Tırmanış', 'Climb')}</i>+${nf(r.up)} m</div>
       <div><i>${L('En dik', 'Steepest')}</i>${nf(r.maxS, 1)}°</div>
     </div>
-    <p class="small" style="margin:6px 0 0">${shieldTxt(b)}${r.why === 'cabin' ? ' · ' + L('en yakın doğal siper belirgin hızlı değil, tam koruma için gezgine', 'the nearest natural shelter is not much faster, so head for full protection in the rover') : r.why === 'faster' ? ' · ' + L('gezgin çok uzak; önce siper, olay geçince gezgine', 'the rover is too far; shelter first, rover once the event passes') : ''}${r.relaxed ? ' · ' + L('normal sınırlarla yol yoktu, eğim ve pürüzlülük sınırı gevşetildi', 'no path within normal limits; slope and roughness limits relaxed') : ''}</p>
-    ${r.opts.length > 1 ? `<table class="data" style="margin-top:8px">${r.opts.slice(1, 4).map(o => `<tr><td>${shelterName(o)}</td><td>${hm(o.t / 60)}</td><td>${o.kind === 'rover' ? L('kabin', 'cabin') : '%' + nf(o.block * 100)}</td></tr>`).join('')}</table>` : ''}
-    <p class="enote">${note}</p>`;
+    <table class="info" style="margin-top:8px">
+      <tr><td>${L('Acil durum türü', 'Emergency type')}</td><td>${etName(emerg.type)}</td></tr>
+      <tr><td>${L('Konum', 'Position')}</td><td>${gridTxt(emerg.pos)} · ${L('haritada işaretli', 'marked on the map')}</td></tr>
+      <tr><td>${L('En yakın güvenli istasyon', 'Nearest safe station')}</td><td>${shelterName(r.nearest)} · ${hm(r.nearest.t / 60 * c.ty.f)}</td></tr>
+      <tr><td>${L('Hedef', 'Target')}</td><td>${shelterName(b)} · ${shieldTxt(b)}</td></tr>
+      <tr><td>${L('Varış', 'Arrival')}</td><td class="${evaok ? '' : 'warnv'}">T+${hm(c.arrive)} · EVA ${hm(evaArr)} / ${hm(P.limit)}</td></tr>
+      <tr><td>${L('Varışta oksijen', 'Oxygen on arrival')} ${SIM()}</td><td class="${o2ok ? '' : 'warnv'}">${o2ok ? `≈ ${hm(c.o2Arr / c.ty.o2)} ${L('kalır', 'left')}` : L('YETMİYOR', 'NOT ENOUGH')}</td></tr>
+    </table>
+    ${notes.length ? `<p class="small" style="margin:6px 0 0">${notes.join(' · ')}</p>` : ''}
+    <div class="ekey"><span><i style="background:${cssVar('--accent') || '#c2410c'};opacity:.5"></i>${L('mevcut rota', 'current route')}</span><span><i style="background:#ff2d1f;box-shadow:0 0 0 1px #000"></i>${L('güvenli dönüş', 'safe return')}</span><span><i style="background:#fff;width:9px;height:9px;border-radius:50%;border:2px solid #d0281c"></i>${L('astronot', 'astronaut')}</span></div>
+    <div class="lbl">${L('Adımlar', 'Steps')}</div>
+    <ol class="etl">${emergSteps(c).map(s => `<li class="${s[2] ? 'end' : ''}"><b>T+${hm(s[0])}</b>${s[1]}</li>`).join('')}</ol>
+    ${r.opts.length > 1 ? `<table class="data" style="margin-top:8px">${r.opts.slice(1, 4).map(o => `<tr><td>${shelterName(o)}</td><td>${hm(o.t / 60 * c.ty.f)}</td><td>${o.kind === 'rover' ? L('kabin', 'cabin') : '%' + nf(o.block * 100)}</td></tr>`).join('')}</table>` : ''}`;
 }
-function openEmergency(type) {
-  let pos = null;
+function renderEmergency() {
+  const box = $('emerg'), mini = $('sosMini'), live = !!(emerg && emerg.stage === 'active');
+  box.hidden = !sosUI.open; mini.hidden = sosUI.open;
+  mini.classList.toggle('live', live); mini.textContent = live ? L('SOS · AKTİF', 'SOS · ACTIVE') : 'SOS';
+  mini.title = L('SOS panelini aç', 'Open the SOS panel');
+  $('sosBtn').classList.toggle('on', sosUI.open || live);
+  box.classList.toggle('live', live);
+  $('eTitle').textContent = live ? L('SOS · ACİL DURUM AKTİF', 'SOS · EMERGENCY ACTIVE') : L('SOS · ACİL DURUM', 'SOS · EMERGENCY');
+  $('eSub').textContent = L('başlıktan sürükle', 'drag by the header');
+  $('eReset').title = L('Panel konumunu sıfırla', 'Reset panel position'); $('eReset').setAttribute('aria-label', $('eReset').title);
+  $('eClose').title = live ? L('Paneli küçült (acil durum sürer)', 'Minimise panel (emergency stays active)') : L('Paneli kapat', 'Close panel'); $('eClose').setAttribute('aria-label', $('eClose').title);
+  if (!sosUI.open || !emerg) return;
+  const st = emerg.stage, types = ETYPE_ORDER.map(k => `<button type="button" data-type="${k}" class="${emerg.type === k ? 'on' : ''}">${etName(k)}<small>${L(...ETYPES[k].s)}</small></button>`).join('');
+  let a = '';
+  if (st === 'select') a = `<div class="lbl">A · ${L('Acil durum türü', 'Emergency type')}</div><div class="etypes">${types}</div>
+    <button type="button" class="sosbig" data-act="sos">SOS<small>${emerg.type ? etName(emerg.type) : L('tür seçilmedi: “Diğer” olarak bildirilir', 'no type chosen: reported as “Other”')} · ${L('onay istenecek', 'confirmation follows')}</small></button>`;
+  else if (st === 'confirm') a = `<div class="lbl">A · ${L('Acil durum türü', 'Emergency type')}</div><div class="etypes">${types}</div>
+    <div class="confirm" role="alertdialog"><p><b>${L('Acil durum başlatılsın mı?', 'Start the emergency?')}</b><br>${etName(emerg.type)} · ${gridTxt(emerg.pos)}</p>
+    <p class="small">${L('Onaylayınca duraklar iptal sayılır ve güvenli dönüş planı haritada çizilir. Bu bir görev simülasyonudur; hiçbir yere sinyal gönderilmez.', 'Confirming cancels the stops and draws the safe return plan on the map. This is a mission simulation; no signal is sent anywhere.')}</p>
+    <div class="acts"><button type="button" class="pri" data-act="confirm">${L('Onayla, planı oluştur', 'Confirm, build the plan')}</button><button type="button" data-act="cancel">${L('Vazgeç', 'Cancel')}</button></div></div>`;
+  const body = `<p class="disc">${L('Görev simülasyonu · gerçek bir NASA acil durum sistemi değildir. Rota ve yürüme süreleri bu sayfadaki HiRISE DTM ve yürüme modelinden; EVA saati ve oksijen', 'Mission simulation · not a real NASA emergency system. Route and walking times come from this page\'s HiRISE DTM and walking model; EVA clock and oxygen are')} ${SIM()} ${L('değerleri.', 'values.')}</p>
+    ${a}
+    ${st === 'active' ? `<div class="lbl">C · ${L('Acil durum planı', 'Emergency plan')}</div><div id="ePlan">${emergPlanHtml()}</div>` : ''}
+    <div class="acts"><button type="button" class="ebtn${mode === 'pickE' ? ' on' : ''}" id="ePick" data-act="pick">${L('Konumu haritada seç', 'Pick position on map')}</button>${st === 'active' ? `<button type="button" class="ebtn" data-act="show">${L('Rotayı haritada göster', 'Show route on map')}</button>` : ''}</div>
+    <div class="lbl">B · ${L('Otomatik görev bilgileri', 'Automatic mission data')}</div>
+    <div id="eInfo">${emergInfoHtml()}</div>
+    <div class="simrow"><span>${L('EVA saati', 'EVA clock')} ${SIM()}</span><input type="range" id="eEl" min="0" max="${P.limit}" step="5" value="${Math.round(emerg.el)}" aria-label="${L('Simüle EVA süresi', 'Simulated EVA time')}"></div>
+    ${st === 'active' ? `<div class="acts" style="margin-top:10px"><button type="button" data-act="end">${L('Acil durumu sonlandır', 'End emergency')}</button></div>` : ''}`;
+  $('eBody').innerHTML = body;
+  sosPlace();
+}
+function emergRefreshInfo() {   // update numbers without rebuilding the panel (keeps the slider under the finger)
+  if (!emerg || !sosUI.open) return;
+  const i = $('eInfo'); if (i) i.innerHTML = emergInfoHtml();
+  const p = $('ePlan'); if (p) p.innerHTML = emergPlanHtml();
+}
+function emergDefaultPos() {
   const s = stations && stations.find(q => q.id === selected);
-  if (s) pos = { X: s.X, Y: s.Y };
-  else if (plan && plan.prof.length) { const c = plan.prof[plan.prof.length >> 1].c; pos = { X: cX(c), Y: cY(c) }; }
-  else pos = { X: base.X + 300, Y: base.Y + 300 };
-  emerg = { type: type || (emerg && emerg.type) || 'dust', pos, res: null };
-  renderEmergency(); setTimeout(computeEmergency, 20);
-  if (!is3d) { const [x, y] = toScreen(pos.X, pos.Y); if (x < 40 || y < 40 || x > vw - 40 || y > vh - 40) { view.tx += vw / 2 - x; view.ty += vh / 2 - y; } }
+  if (s) return { X: s.X, Y: s.Y };
+  if (plan && plan.prof.length) { const c = plan.prof[plan.prof.length >> 1].c; return { X: cX(c), Y: cY(c) }; }
+  return { X: base.X + 300, Y: base.Y + 300 };
 }
-function closeEmergency() { emerg = null; renderEmergency(); setMode('inspect'); draw(); }
+function openEmergency() {
+  sosUI.open = true;
+  if (!emerg) {
+    const pos = emergDefaultPos(), pt = planTimeAt(pos);
+    emerg = { stage: 'select', type: null, pos, last: null, el: pt ? pt.t : Math.min(P.limit, plan ? plan.total / 2 : 60), res: null };
+    setTimeout(computeEmergency, 20);
+    if (!is3d) { const [x, y] = toScreen(pos.X, pos.Y); if (x < 40 || y < 40 || x > vw - 40 || y > vh - 40) { view.tx += vw / 2 - x; view.ty += vh / 2 - y; } }
+  }
+  renderEmergency(); draw();
+}
+function emergSetPos(pos) {
+  emerg.last = { pos: emerg.pos, el: emerg.el };
+  emerg.pos = pos; const pt = planTimeAt(pos); if (pt) emerg.el = pt.t;
+  emerg.res = null; renderEmergency(); setTimeout(computeEmergency, 20);
+}
+function minimiseEmergency() {   // panel away; an active emergency stays on the map, an unconfirmed one is dropped
+  sosUI.open = false;
+  if (emerg && emerg.stage !== 'active') emerg = null;
+  if (mode === 'pickE') setMode('inspect');
+  renderEmergency(); draw();
+}
+function closeEmergency() { emerg = null; sosUI.open = false; if (mode === 'pickE') setMode('inspect'); renderEmergency(); draw(); }
+function emergFit() {
+  const r = emerg && emerg.res; if (!r || !r.path || is3d) return;
+  let x0 = emerg.pos.X, x1 = x0, y0 = emerg.pos.Y, y1 = y0;
+  for (const c of r.path) { const x = cX(c), y = cY(c); x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  const m = Math.max(60, (x1 - x0 + y1 - y0) * .12); fit(x0 - m, y0 - m, x1 + m, y1 + m, 40);
+}
 function drawEmergency() {   // world space; also drawn into the 3D texture
   if (!emerg) return;
-  const s = view.s;
-  for (const sh of SHELTERS) {
-    if (ETYPES[emerg.type].targets !== 'all') break;
+  const s = view.s / (texMode ? 2.4 : 1), r = emerg.res, live = emerg.stage === 'active';   // thicker in the 3D texture
+  const hex = sh => {
     ctx.save(); ctx.translate(sh.X, sh.Y); ctx.scale(1 / s, 1 / s);
     ctx.beginPath(); ctx.moveTo(0, -8); ctx.lineTo(7, -4); ctx.lineTo(6, 4); ctx.lineTo(0, 8); ctx.lineTo(-6, 4); ctx.lineTo(-7, -4); ctx.closePath();
     ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.fill(); ctx.strokeStyle = '#b3261e'; ctx.lineWidth = 1.6; ctx.stroke();
     ctx.restore();
-  }
-  const r = emerg.res;
-  if (r && r.path) {
+  };
+  if (etype().targets === 'all') SHELTERS.forEach(hex);
+  else if (r && r.nearest && r.nearest.kind === 'shelter') hex(r.nearest);
+  if (r && r.best && r.best.kind === 'shelter' && etype().targets !== 'all') hex(r.best);
+  if (live && r && r.path) {
     ctx.lineJoin = ctx.lineCap = 'round';
     ctx.beginPath(); r.path.forEach((c, i) => i ? ctx.lineTo(cX(c), cY(c)) : ctx.moveTo(cX(c), cY(c)));
-    ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 8 / s; ctx.stroke();
-    ctx.strokeStyle = '#d0281c'; ctx.lineWidth = 4.5 / s; ctx.stroke();
+    ctx.strokeStyle = 'rgba(0,0,0,.85)'; ctx.lineWidth = 9 / s; ctx.stroke();
+    ctx.strokeStyle = '#ff2d1f'; ctx.lineWidth = 5.5 / s; ctx.stroke();
+    ctx.setLineDash([7 / s, 9 / s]); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.6 / s; ctx.stroke(); ctx.setLineDash([]);
     const e = r.path[r.path.length - 1];
     ctx.beginPath(); ctx.arc(cX(e), cY(e), 11 / s, 0, 7); ctx.fillStyle = '#d0281c'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5 / s; ctx.stroke();
   }
+  if (emerg.last) {   // last known position: hollow ring
+    ctx.beginPath(); ctx.arc(emerg.last.pos.X, emerg.last.pos.Y, 8 / s, 0, 7); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 3.5 / s; ctx.stroke();
+    ctx.strokeStyle = '#d0281c'; ctx.lineWidth = 1.8 / s; ctx.stroke();
+  }
   // astronaut
-  ctx.beginPath(); ctx.arc(emerg.pos.X, emerg.pos.Y, 13 / s, 0, 7); ctx.fillStyle = 'rgba(208,40,28,.25)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(emerg.pos.X, emerg.pos.Y, (live ? 16 : 13) / s, 0, 7); ctx.fillStyle = 'rgba(208,40,28,.28)'; ctx.fill();
   ctx.beginPath(); ctx.arc(emerg.pos.X, emerg.pos.Y, 6 / s, 0, 7); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = '#d0281c'; ctx.lineWidth = 3 / s; ctx.stroke();
 }
 function emergencyLabels() {   // screen space, 2D only
   if (!emerg) return;
+  const live = emerg.stage === 'active', f = '600 12px ' + cssVar('--sans');
   const [x, y] = toScreen(emerg.pos.X, emerg.pos.Y);
-  haloText(L('Astronot', 'Astronaut'), x + 16, y, '#fff', 'rgba(120,0,0,.9)', '600 12px ' + cssVar('--sans'), 'left');
+  haloText(live ? `SOS · ${etName(emerg.type)}` : L('Astronot', 'Astronaut'), x + 18, y, '#fff', 'rgba(120,0,0,.9)', f, 'left');
+  if (emerg.last) { const [lx, ly] = toScreen(emerg.last.pos.X, emerg.last.pos.Y); haloText(L('son bilinen', 'last known'), lx + 12, ly + 14, '#ffd9d4', 'rgba(0,0,0,.8)', '11px ' + cssVar('--sans'), 'left'); }
   const r = emerg.res; if (!r || !r.best) return;
-  const [bx, by] = toScreen(cX(r.best.cell), cY(r.best.cell));
-  haloText(`${shelterName(r.best)} · ${hm(r.best.t / 60)}`, bx + 16, by, '#fff', 'rgba(120,0,0,.9)', '600 12px ' + cssVar('--sans'), 'left');
-  if (ETYPES[emerg.type].targets === 'all' && view.s > .9) for (const sh of SHELTERS) { const [sx, sy] = toScreen(sh.X, sh.Y); haloText(`%${nf(sh.block * 100)}`, sx, sy + 15, '#ffd9d4', 'rgba(0,0,0,.8)', '10px ' + cssVar('--mono')); }
+  const k = etype().f;
+  if (live) { const [bx, by] = toScreen(cX(r.best.cell), cY(r.best.cell)); haloText(`${shelterName(r.best)} · ${hm(r.best.t / 60 * k)}`, bx + 16, by, '#fff', 'rgba(120,0,0,.9)', f, 'left'); }
+  else if (r.nearest) { const [bx, by] = toScreen(cX(r.nearest.cell), cY(r.nearest.cell)); haloText(`${L('en yakın', 'nearest')}: ${shelterName(r.nearest)}`, bx + 14, by, '#fff', 'rgba(0,0,0,.8)', '500 11.5px ' + cssVar('--sans'), 'left'); }
+  if (etype().targets === 'all' && view.s > .9) for (const sh of SHELTERS) { const [sx, sy] = toScreen(sh.X, sh.Y); haloText(`%${nf(sh.block * 100)}`, sx, sy + 15, '#ffd9d4', 'rgba(0,0,0,.8)', '10px ' + cssVar('--mono')); }
 }
-$('sosBtn').onclick = () => emerg ? closeEmergency() : openEmergency();
-$('eClose').onclick = closeEmergency;
-$('eType').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || !emerg) return; emerg.type = b.dataset.v; emerg.res = null; renderEmergency(); setTimeout(computeEmergency, 20); });
-$('ePick').onclick = () => setMode(mode === 'pickE' ? 'inspect' : 'pickE');
+/* ---------- SOS panel: open/close, drag by the header, keep inside the map ---------- */
+try { const s = JSON.parse(localStorage.getItem('marswalk-sos-pos') || 'null'); if (s && isFinite(s.x) && isFinite(s.y)) sosUI.pos = { x: +s.x, y: +s.y }; } catch (e) {}
+function sosPlace(save) {
+  const box = $('emerg'); if (box.hidden) return;
+  const wrap = $('mapwrap'), W = wrap.clientWidth, H = wrap.clientHeight, w = box.offsetWidth, h = box.offsetHeight, m = 6;
+  let x = sosUI.pos ? sosUI.pos.x : (W - w) / 2, y = sosUI.pos ? sosUI.pos.y : 48;
+  x = Math.max(m, Math.min(Math.max(m, W - w - m), x)); y = Math.max(m, Math.min(Math.max(m, H - h - m), y));
+  box.style.left = Math.round(x) + 'px'; box.style.top = Math.round(y) + 'px';
+  if (save) { sosUI.pos = { x, y }; try { localStorage.setItem('marswalk-sos-pos', JSON.stringify(sosUI.pos)); } catch (e) {} }
+}
+{
+  const hd = $('eHd'), box = $('emerg'); let dr = null;
+  hd.addEventListener('pointerdown', e => {
+    if (e.target.closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    e.preventDefault(); e.stopPropagation();
+    const r = box.getBoundingClientRect();
+    dr = { id: e.pointerId, dx: e.clientX - r.left, dy: e.clientY - r.top };
+    try { hd.setPointerCapture(e.pointerId); } catch (er) {}
+    box.classList.add('dragging');
+  });
+  hd.addEventListener('pointermove', e => {
+    if (!dr || e.pointerId !== dr.id) return;
+    e.preventDefault(); e.stopPropagation();
+    const wr = $('mapwrap').getBoundingClientRect();
+    sosUI.pos = { x: e.clientX - wr.left - dr.dx, y: e.clientY - wr.top - dr.dy }; sosPlace();
+  });
+  const end = e => { if (!dr || (e.pointerId !== undefined && e.pointerId !== dr.id)) return; dr = null; box.classList.remove('dragging'); sosPlace(true); };
+  hd.addEventListener('pointerup', end); hd.addEventListener('pointercancel', end); hd.addEventListener('lostpointercapture', end);
+  // keep pointer/wheel/touch over the panel away from the map and 3D view
+  for (const ev of ['pointerdown', 'wheel', 'dblclick', 'contextmenu']) box.addEventListener(ev, e => e.stopPropagation());
+  window.addEventListener('resize', () => sosPlace());
+  if (window.ResizeObserver) new ResizeObserver(() => sosPlace()).observe($('mapwrap'));
+}
+$('sosBtn').onclick = () => sosUI.open ? minimiseEmergency() : openEmergency();
+$('sosMini').onclick = openEmergency;
+$('eClose').onclick = minimiseEmergency;
+$('eReset').onclick = () => { sosUI.pos = null; try { localStorage.removeItem('marswalk-sos-pos'); } catch (e) {} sosPlace(); };
+$('eBody').addEventListener('click', e => {
+  if (!emerg) return;
+  const tb = e.target.closest('[data-type]');
+  if (tb) { emerg.type = tb.dataset.type; emerg.res = null; renderEmergency(); setTimeout(computeEmergency, 20); return; }
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'sos') { if (!emerg.type) emerg.type = 'other'; emerg.stage = 'confirm'; renderEmergency(); setTimeout(computeEmergency, 20); }
+  else if (a === 'cancel') { emerg.stage = 'select'; renderEmergency(); }
+  else if (a === 'confirm') { emerg.stage = 'active'; emerg.fit = true; if (mode === 'pickE') setMode('inspect'); renderEmergency(); draw(); if (emerg.res) { emerg.fit = false; emergFit(); } toast(L('Acil durum planı oluşturuldu (simülasyon)', 'Emergency plan created (simulation)')); }
+  else if (a === 'pick') { setMode(mode === 'pickE' ? 'inspect' : 'pickE'); }
+  else if (a === 'show') emergFit();
+  else if (a === 'end') closeEmergency();
+});
+$('eBody').addEventListener('input', e => { if (e.target.id === 'eEl' && emerg) { emerg.el = +e.target.value; emergRefreshInfo(); } });
 
 /* ---------- intro pages ---------- */
 {
@@ -1919,15 +2382,164 @@ $('ePick').onclick = () => setMode(mode === 'pickE' ? 'inspect' : 'pickE');
 /* ---------- intro: Mars globe, then fly into Gale ---------- */
 (function () {
   const sec = $('globeSec'), cvG = $('globeCv');
-  let G = null, raf = 0, fly = null, idle = true, drag = null;
+  let G = null, raf = 0, fly = null, idle = true, drag = null, pinch = null;
+  const ptrs = new Map();
   const GALE = { lat: -5.4, lon: 137.8 }, SECT = { lat: (B.sector.lat[0] + B.sector.lat[1]) / 2, lon: (B.sector.lon[0] + B.sector.lon[1]) / 2 };
+  const d2r = Math.PI / 180;
   const v3 = (lat, lon, r = 1) => {   // same convention as THREE.SphereGeometry + equirectangular texture
     const ph = (lon + 180) / 360 * Math.PI * 2, th = (90 - lat) / 180 * Math.PI;
     return new THREE.Vector3(-Math.cos(ph) * Math.sin(th) * r, Math.cos(th) * r, Math.sin(ph) * Math.sin(th) * r);
   };
+  /* Level-of-detail tile streaming. Tile grid: level z has 2·2^z columns × 2^z rows in plate carrée; Mars Trek
+     (default028mm) and the Esri OnMars CTX service share the same z/row/col numbering. The embedded 4096×2048 Viking
+     texture is level 3, so streaming starts at level 4. Close up, the grey CTX detail is laid over the Viking colour
+     (detail = CTX brightness / its own low-pass), so the planet keeps its real Viking colours at every zoom. */
+  const TSRC = {
+    vik: { name: 'Viking MDIM 2.1 · NASA / USGS', host: 'Mars Trek', px: 256,
+      url: (z, r, c) => `https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/${z}/${r}/${c}.jpg` },
+    ctx: { name: 'MRO CTX küresel mozaik · Murray Lab / Caltech', nameEn: 'MRO CTX global mosaic · Murray Lab / Caltech', host: 'Esri OnMars (Mars Trek katmanı)', hostEn: 'Esri OnMars (Mars Trek layer)', px: 512,
+      url: (z, r, c) => `https://astro.arcgis.com/arcgis/rest/services/OnMars/CTX/MapServer/tile/${z}/${r}/${c}` },
+  };
+  const srcOf = z => z <= 7 ? TSRC.vik : TSRC.ctx;
+  // CTX is a raw, low-contrast mosaic (on the flat Gale floor a tile's grey values spread only ~2 %); a fixed linear
+  // contrast stretch of its local detail keeps that real relief visible. Values are clamped, colours stay Viking's.
+  const DETAIL_GAIN = 3.2;
+  const ZMAX = 12, TR = 1.00075, ZMIN = 1.0024, MAXSEL = 150, BUDGET = 190e6, MAXLOAD = 8, FADE = 260, MARS_C = 2 * Math.PI * 3396.19e3;
+  const T = { cache: new Map(), loading: 0, ready: [], bytes: 0, frame: 0, fails: 0, maxZ: 0, shown: 0, off: false, aniso: 4 };
+  function tile(z, r, c) {
+    const key = z + '/' + r + '/' + c; let t = T.cache.get(key);
+    if (!t) {
+      const sp = 180 / (1 << z), lon0 = -180 + c * sp, lat1 = 90 - r * sp;
+      t = { key, z, r, c, sp, lon0, lat1, lat0: lat1 - sp, state: 'idle', used: 0, refs: 0 };
+      t.ctr = v3(lat1 - sp / 2, lon0 + sp / 2);
+      t.rad = Math.max(...[[lat1, lon0], [lat1, lon0 + sp], [lat1 - sp, lon0], [lat1 - sp, lon0 + sp]].map(([a, o]) => v3(a, o).distanceTo(t.ctr)));
+      t.ang = 2 * Math.asin(Math.min(1, t.rad / 2));
+      T.cache.set(key, t);
+    }
+    return t;
+  }
+  const parentOf = t => t.z > 4 ? tile(t.z - 1, t.r >> 1, t.c >> 1) : null;
+  const colAnc = t => { let p = t; while (p && p.z > 7) p = parentOf(p); return p; };   // Viking level-7 ancestor
+  function bestCol(t) { let p = colAnc(t); while (p && p.state !== 'ok') p = parentOf(p); return p; }
+  function setCol(t) {   // colour source: the best loaded Viking ancestor (level 7 = 232 m data), else the embedded texture
+    const u = t.mesh.material.userData.u, p = bestCol(t);
+    if (p === t.col) return;
+    if (t.col) t.col.refs--; t.col = p || null; if (p) p.refs++;
+    if (p) { u.cTex.value = p.tex; u.cBox.value.set((t.lon0 - p.lon0) / p.sp, (t.lat0 - p.lat0) / p.sp, t.sp / p.sp, t.sp / p.sp); }
+    else { u.cTex.value = G.tex; u.cBox.value.set((t.lon0 + 180) / 360, (t.lat0 + 90) / 180, t.sp / 360, t.sp / 180); }
+  }
+  function ctxMaterial(tx, t) {
+    const m = new THREE.MeshLambertMaterial({ map: tx, transparent: true, opacity: 0, depthWrite: false });
+    const u = { cTex: { value: G.tex }, cBox: { value: new THREE.Vector4(0, 0, 1, 1) }, rTex: { value: tx }, rBox: { value: new THREE.Vector4(0, 0, 1, 1) },
+      lpBias: { value: 4.3 } };   // ~20 px low-pass window: a wide window would leave soft bands along every tile edge
+    m.userData.u = u;
+    m.onBeforeCompile = sh => {
+      Object.assign(sh.uniforms, u);
+      sh.fragmentShader = 'uniform sampler2D cTex;\nuniform vec4 cBox;\nuniform sampler2D rTex;\nuniform vec4 rBox;\nuniform float lpBias;\n' + sh.fragmentShader.replace('#include <map_fragment>', [
+        'vec4 dTx = texture2D( map, vUv );',
+        'vec2 rUv = rBox.xy + vUv * rBox.zw;',
+        // the low-pass window shrinks near the reference tile's edge, so it never reads past it and the
+        // reference stays continuous across tile borders (no seams), while fine detail is kept everywhere
+        'float ePx = max( 1.0, min( min( rUv.x, 1.0 - rUv.x ), min( rUv.y, 1.0 - rUv.y ) ) * 512.0 );',
+        'float lod = min( lpBias, max( 0.0, log2( ePx ) - 0.7 ) );',
+        G.renderer.capabilities.isWebGL2 ? 'vec4 lTx = textureLod( rTex, rUv, lod );' : 'vec4 lTx = texture2D( rTex, rUv, lod );',
+        'float l1 = dot( dTx.rgb, vec3( .299, .587, .114 ) ), l0 = dot( lTx.rgb, vec3( .299, .587, .114 ) );',
+        // gain on log-detail with a soft knee: faint relief is lifted ~3x, strong relief (already contrasty) barely changes
+        `float lr = log( max( l1, 1e-4 ) / l0 ); float kd = ( l1 < .004 || l0 < .01 ) ? 1.0 : exp( ${DETAIL_GAIN.toFixed(2)} * lr / ( 1.0 + ${DETAIL_GAIN.toFixed(2)} * abs( lr ) / .45 ) );`,
+        'diffuseColor.rgb *= texture2D( cTex, cBox.xy + vUv * cBox.zw ).rgb * kd;'].join('\n'));
+    };
+    m.customProgramCacheKey = () => 'marswalk-ctx-detail-2';
+    return m;
+  }
+  function request(t) {
+    if (t.state !== 'idle' || T.loading >= MAXLOAD || T.off) return;
+    t.state = 'loading'; T.loading++;
+    const img = new Image(); img.crossOrigin = 'anonymous'; img.decoding = 'async';
+    img.onload = () => { T.loading--; if (t.state !== 'loading') return; if (!img.naturalWidth) { t.state = 'fail'; T.fails++; return; } t.img = img; t.state = 'ready'; T.ready.push(t); draw(); };
+    img.onerror = () => { T.loading--; if (t.state !== 'loading') return; t.state = 'fail'; T.fails++; };   // CTX has gaps (404): the Viking parent stays
+    img.src = srcOf(t.z).url(t.z, t.r, t.c);
+  }
+  function upload(t) {   // at most a few per frame so texture uploads never stall the frame
+    const tx = new THREE.Texture(t.img); tx.encoding = THREE.sRGBEncoding; tx.anisotropy = T.aniso; tx.needsUpdate = true; t.img = null;
+    const seg = Math.max(4, Math.min(32, Math.ceil(t.sp / 0.4)));
+    const geo = new THREE.SphereGeometry(TR, seg, seg, (t.lon0 + 180) * d2r, t.sp * d2r, (90 - t.lat1) * d2r, t.sp * d2r);
+    const mat = t.z <= 7 ? new THREE.MeshLambertMaterial({ map: tx, transparent: true, opacity: 0, depthWrite: false }) : ctxMaterial(tx, t);
+    t.mesh = new THREE.Mesh(geo, mat); t.mesh.renderOrder = -100 + t.z; t.mesh.visible = false; t.mesh.matrixAutoUpdate = false; t.mesh.updateMatrix();
+    G.globe.add(t.mesh); t.tex = tx; t.state = 'ok'; t.t0 = performance.now(); t.bytes = srcOf(t.z).px ** 2 * 4 * 1.34; T.bytes += t.bytes;
+    if (t.z > 7) setCol(t);
+  }
+  function freeTile(t) {
+    if (t.mesh) { G.globe.remove(t.mesh); t.mesh.geometry.dispose(); t.mesh.material.dispose(); t.mesh = null; }
+    if (t.tex) { t.tex.dispose(); t.tex = null; }
+    if (t.col) { t.col.refs--; t.col = null; }
+    if (t.bytes) { T.bytes -= t.bytes; t.bytes = 0; }
+    t.img = null; t.state = 'idle';
+  }
+  const _m = new THREE.Matrix4(), _fr = new THREE.Frustum(), _sph = new THREE.Sphere(), _cl = new THREE.Vector3(), _cd = new THREE.Vector3();
+  function streamTiles(now) {
+    const cam = G.camera, fno = ++T.frame;
+    G.globe.updateMatrixWorld(); cam.updateMatrixWorld();
+    _m.multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse).multiply(G.globe.matrixWorld); _fr.setFromProjectionMatrix(_m);
+    _cl.copy(cam.position); G.globe.worldToLocal(_cl);
+    const D = _cl.length(); _cd.copy(_cl).divideScalar(D);
+    const hor = Math.acos(Math.min(1, 1 / D)), kpx = G.renderer.domElement.height / (2 * Math.tan(cam.fov * d2r / 2));
+    const sel = [];
+    const visit = (z, r, c) => {
+      const t = tile(z, r, c);
+      if (Math.acos(Math.max(-1, Math.min(1, t.ctr.dot(_cd)))) > hor + t.ang) return;          // behind the horizon
+      _sph.center.copy(t.ctr).multiplyScalar(TR); _sph.radius = t.rad * 1.03 + 1e-4;
+      if (!_fr.intersectsSphere(_sph)) return;                                                 // outside the view
+      const dist = Math.max(1e-5, _sph.center.distanceTo(_cl) - t.rad * .5), px = t.sp * d2r / dist * kpx;
+      const texPx = z <= 3 ? 256 : srcOf(z).px;
+      // a quad with a hole in the finer CTX level is drawn from this level as a whole, so resolutions do not patchwork
+      const holes = z >= 8 && t.state === 'ok' && [0, 1, 2, 3].some(k => { const q = T.cache.get((z + 1) + '/' + (r * 2 + (k >> 1)) + '/' + (c * 2 + (k & 1))); return q && q.state === 'fail'; });
+      if (z < ZMAX && px > texPx && t.state !== 'fail' && !holes && sel.length < MAXSEL) { const z1 = z + 1, r1 = r * 2, c1 = c * 2; visit(z1, r1, c1); visit(z1, r1, c1 + 1); visit(z1, r1 + 1, c1); visit(z1, r1 + 1, c1 + 1); }
+      else if (z >= 4) sel.push(t);
+    };
+    if (!T.off) for (let r = 0; r < 8; r++) for (let c = 0; c < 16; c++) visit(3, r, c);
+    // what to draw: every loaded selected tile, plus its nearest loaded ancestor while it is missing or fading in
+    const show = new Set(), want = [];
+    const anc = t => { let p = parentOf(t); while (p && p.state !== 'ok') p = parentOf(p); return p; };
+    for (const t of sel) {
+      t.used = fno;
+      if (t.state === 'ok') { show.add(t); if (now - t.t0 < FADE) { const p = anc(t); if (p) show.add(p); } }
+      else {
+        const p = anc(t); if (p) show.add(p); if (t.state === 'idle') want.push(t);
+        // a CTX gap (the server answers with an error): fetch the next coarser CTX level so the hole falls back to CTX, not Viking
+        if (t.state === 'fail' && t.z > 8) { let q = parentOf(t); while (q && q.z > 8 && q.state === 'fail') q = parentOf(q); if (q && q.state === 'idle') want.push(q); if (q) q.used = fno; }
+      }
+      if (t.z > 7) { const ca = colAnc(t); if (ca) { ca.used = fno; if (ca.state === 'idle') want.push(ca); } }
+    }
+    for (const t of show) t.used = fno;
+    want.sort((a, b) => a.z - b.z || b.ctr.dot(_cd) - a.ctr.dot(_cd));
+    for (const t of want) { if (T.loading >= MAXLOAD) break; request(t); }
+    for (let k = 0; k < 4 && T.ready.length; k++) { const t = T.ready.shift(); if (t.state === 'ready') { if (t.img && t.img.naturalWidth) upload(t); else { t.img = null; t.state = 'fail'; } } }
+    let maxZ = 0, n = 0;
+    for (const t of T.cache.values()) if (t.mesh) {
+      const on = show.has(t); t.mesh.visible = on;
+      if (on) { t.mesh.material.opacity = Math.min(1, (now - t.t0) / FADE); if (t.z > 7) setCol(t); maxZ = Math.max(maxZ, t.z); n++; }
+    }
+    T.maxZ = maxZ; T.shown = n;
+    if (T.bytes > BUDGET) {   // least recently used first; never a tile on screen or one lending its colour
+      const ok = [...T.cache.values()].filter(t => t.state === 'ok' && t.used < fno && t.refs <= 0).sort((a, b) => a.used - b.used);
+      for (const t of ok) { if (T.bytes <= BUDGET * .85) break; freeTile(t); }
+    }
+    if (T.cache.size > 8000) for (const [k, t] of T.cache) if (t.state === 'idle' && t.used < fno - 300) T.cache.delete(k);
+  }
+  let hudT = 0;
+  function hud(now) {
+    if (now - hudT < 300) return; hudT = now;
+    const z = T.maxZ, s = z ? srcOf(z) : null, mpp = z ? MARS_C / (2 * (1 << z) * s.px) : MARS_C / 4096;
+    const alt = (G.camera.position.length() - 1) * 3396.19;
+    const line1 = z > 7 ? L(s.name, s.nameEn) : 'Viking MDIM 2.1 · NASA / USGS';
+    const line2 = z > 7 ? `${L('renk', 'colour')}: Viking MDIM 2.1 · ${L(s.host, s.hostEn)}` : (z ? 'NASA Mars Trek WMTS' : L('gömülü küresel doku', 'embedded global texture'));
+    $('gSrc').innerHTML = `MARS · ${line1}<br>${line2}<br>${L('seviye', 'level')} ${z || 3} · ≈ ${mpp >= 1000 ? nf(mpp / 1000, 1) + ' km' : nf(mpp, 0) + ' m'}/${L('piksel', 'pixel')} · ${L('irtifa', 'altitude')} ${alt >= 100 ? nf(alt, 0) : nf(alt, 1)} km`
+      + (T.loading ? `<br>${L('yükleniyor', 'loading')}: ${T.loading}` : '') + (T.fails && !T.maxZ && T.frame > 120 ? `<br>${L('çevrimiçi kaynaklara ulaşılamadı: gömülü doku', 'online sources unreachable: embedded texture')}` : '');
+  }
   function build() {
     const renderer = new THREE.WebGLRenderer({ canvas: cvG, antialias: true, alpha: false });
     renderer.outputEncoding = THREE.sRGBEncoding; renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+    T.aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     const scene = new THREE.Scene(); scene.background = new THREE.Color(0x07070a);
     const camera = new THREE.PerspectiveCamera(35, 1, 0.001, 200);
     const tl = new THREE.TextureLoader();
@@ -1935,7 +2547,7 @@ $('ePick').onclick = () => setMode(mode === 'pickE' ? 'inspect' : 'pickE');
     const ptex = tl.load(IMG.marsGale, () => draw()); ptex.encoding = THREE.sRGBEncoding; ptex.anisotropy = 8;
     const globe = new THREE.Group(); scene.add(globe);
     globe.add(new THREE.Mesh(new THREE.SphereGeometry(1, 128, 96), new THREE.MeshLambertMaterial({ map: tex })));
-    const p = B.globe.patch, d2r = Math.PI / 180;
+    const p = B.globe.patch;
     globe.add(new THREE.Mesh(new THREE.SphereGeometry(1.0006, 48, 48, (p.lon0 + 180) * d2r, (p.lon1 - p.lon0) * d2r, (90 - p.lat1) * d2r, (p.lat1 - p.lat0) * d2r),
       new THREE.MeshLambertMaterial({ map: ptex })));
     // Gale ring + sector marker
@@ -1958,14 +2570,18 @@ $('ePick').onclick = () => setMode(mode === 'pickE' ? 'inspect' : 'pickE');
     // start with Gale a little right of centre
     const n0 = v3(GALE.lat, GALE.lon);
     globe.rotation.y = Math.atan2(-n0.x, n0.z) - 0.9;
-    G = { renderer, scene, camera, globe, ring, mark, glow, dist: 3.7 };
+    G = { renderer, scene, camera, globe, ring, mark, glow, tex, dist: 3.7, z: 3.7, zt: 3.7, lat: 0 };
   }
+  const clampZ = z => Math.max(ZMIN, Math.min(G.dist * 1.15, z));
   function size() {
     const r = sec.getBoundingClientRect(); G.renderer.setSize(r.width, r.height, false);
     G.camera.aspect = r.width / Math.max(1, r.height); G.camera.updateProjectionMatrix();
+    const zoomed = G.zt < G.dist * .9;
     G.dist = 3.5 / Math.min(1, G.camera.aspect * 1.05);
+    if (!zoomed) G.z = G.zt = G.dist; else G.zt = clampZ(G.zt);
   }
   function draw() { if (G && !raf) raf = requestAnimationFrame(frame); }
+  function setNear(d) { const nr = Math.max(2e-5, (d - TR) * .35); if (Math.abs(nr - G.camera.near) > nr * .02) { G.camera.near = nr; G.camera.updateProjectionMatrix(); } }
   let last = 0;
   function frame(ts) {
     raf = 0; if (!G || sec.hidden) return;
@@ -1977,41 +2593,78 @@ $('ePick').onclick = () => setMode(mode === 'pickE' ? 'inspect' : 'pickE');
       G.globe.rotation.y = fly.r0 + (fly.r1 - fly.r0) * e;
       const target = v3(GALE.lat, GALE.lon).applyAxisAngle(new THREE.Vector3(0, 1, 0), G.globe.rotation.y);
       const look = target.clone().multiplyScalar(e);
-      const dir = new THREE.Vector3(0, 0, 1).lerp(target.clone().normalize(), e).normalize();
-      const dist = G.dist + (1.075 - G.dist) * e;
+      const dir = fly.dir0.clone().lerp(target.clone().normalize(), e).normalize();
+      const dist = fly.d0 + (1.075 - fly.d0) * e;
+      setNear(dist);
       G.camera.position.copy(dir.multiplyScalar(dist)); G.camera.lookAt(look);
       G.mark.material.opacity = Math.max(0, (e - .7) / .3);
       G.glow.material.opacity = 1 - e * .8;
       if (u >= 1 && !fly.done) { fly.done = true; setTimeout(() => window.introClose(), 450); }
     } else {
-      if (idle && !drag) G.globe.rotation.y += dt * 0.12;
-      G.camera.position.set(0, 0, G.dist); G.camera.lookAt(0, 0, 0);
+      G.z += (G.zt - G.z) * Math.min(1, dt * 9); if (Math.abs(G.z - G.zt) < 1e-7) G.z = G.zt;
+      if (idle && !drag && !pinch && G.zt > G.dist * .8) G.globe.rotation.y += dt * 0.12;
+      setNear(G.z);
+      G.camera.position.set(0, Math.sin(G.lat) * G.z, Math.cos(G.lat) * G.z); G.camera.lookAt(0, 0, 0);
+      G.glow.material.opacity = Math.min(1, Math.max(.15, (G.z - 1) / 1.2));
     }
+    streamTiles(ts || performance.now());
     G.renderer.render(G.scene, G.camera);
+    hud(ts || performance.now());
     raf = requestAnimationFrame(frame);
   }
+  function hint() { return L('Sürükle: çevir · Tekerlek / iki parmak: yakınlaş', 'Drag: spin · Wheel / two fingers: zoom'); }
   function show() {
     if (typeof THREE === 'undefined') { window.introClose(); return; }
-    sec.hidden = false;
+    sec.hidden = false; T.off = false;
     if (!G) { try { build(); } catch (e) { window.introClose(); return; } }
-    fly = null; size(); draw(); $('globeGo').focus();
+    fly = null; size(); draw(); $('globeHint').textContent = hint(); $('globeGo').focus();
   }
   function hide() { sec.hidden = true; }
   function explore() {
     if (!G || fly) return;
     const n = v3(GALE.lat, GALE.lon); let r1 = Math.atan2(-n.x, n.z), r0 = G.globe.rotation.y;
     while (r1 - r0 > Math.PI) r1 -= Math.PI * 2; while (r0 - r1 > Math.PI) r1 += Math.PI * 2;
-    fly = { t0: performance.now(), dur: window.MARSWALK_FLY_MS || 2600, r0, r1 }; sec.classList.add('flying'); $('globeHint').textContent = L('Gale kraterine iniliyor…', 'Descending to Gale crater…');
+    drag = pinch = null; ptrs.clear();
+    fly = { t0: performance.now(), dur: window.MARSWALK_FLY_MS || 2600, r0, r1, dir0: G.camera.position.clone().normalize(), d0: G.camera.position.length() };
+    sec.classList.add('flying'); $('globeHint').textContent = L('Gale kraterine iniliyor…', 'Descending to Gale crater…');
   }
-  // stop drawing but keep the scene: the same canvas cannot get a new WebGL context once one was lost
-  function dispose() { cancelAnimationFrame(raf); raf = 0; fly = null; sec.classList.remove('flying'); if (G) { G.camera.position.set(0, 0, G.dist); G.glow.material.opacity = 1; G.mark.material.opacity = 0; } $('globeHint').textContent = L('Küreyi sürükleyerek çevirebilirsin', 'Drag to spin the globe'); }
-  cvG.addEventListener('pointerdown', e => { if (fly) return; drag = { x: e.clientX, r: G.globe.rotation.y }; cvG.setPointerCapture(e.pointerId); });
-  cvG.addEventListener('pointermove', e => { if (drag && G) G.globe.rotation.y = drag.r + (e.clientX - drag.x) * 0.006; });
-  cvG.addEventListener('pointerup', () => { drag = null; });
+  // stop drawing but keep the scene (the same canvas cannot get a new WebGL context once one was lost); free the tiles
+  function dispose() {
+    cancelAnimationFrame(raf); raf = 0; fly = null; sec.classList.remove('flying');
+    if (G) {
+      T.off = true; for (const t of T.cache.values()) if (t.state !== 'idle' && t.state !== 'fail') freeTile(t); T.ready.length = 0;
+      G.lat = 0; G.z = G.zt = G.dist; G.camera.position.set(0, 0, G.dist); G.glow.material.opacity = 1; G.mark.material.opacity = 0;
+    }
+    $('globeHint').textContent = hint();
+  }
+  // pointer: one finger / mouse spins (slower close to the ground), two fingers pinch-zoom, wheel zooms
+  const rotK = () => Math.min(0.006, 0.75 * (G.z - 1) / Math.max(200, cvG.clientHeight));
+  cvG.addEventListener('pointerdown', e => {
+    if (fly || !G) return;
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); try { cvG.setPointerCapture(e.pointerId); } catch (er) {}
+    if (ptrs.size === 1) drag = { x: e.clientX, y: e.clientY };
+    else if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.max(10, Math.hypot(a.x - b.x, a.y - b.y)), z: G.zt }; drag = null; }
+  });
+  cvG.addEventListener('pointermove', e => {
+    if (!G || fly || !ptrs.has(e.pointerId)) return;
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinch && ptrs.size >= 2) { const [a, b] = [...ptrs.values()]; G.zt = clampZ(1 + (pinch.z - 1) * pinch.d / Math.max(10, Math.hypot(a.x - b.x, a.y - b.y))); draw(); return; }
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y, k = rotK(); drag.x = e.clientX; drag.y = e.clientY;
+    G.globe.rotation.y += dx * k / Math.max(.2, Math.cos(G.lat));
+    G.lat = Math.max(-1.45, Math.min(1.45, G.lat + dy * k)); draw();
+  });
+  const up = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) drag = null; else if (ptrs.size === 1 && !drag) { const [a] = [...ptrs.values()]; drag = { x: a.x, y: a.y }; } };
+  cvG.addEventListener('pointerup', up); cvG.addEventListener('pointercancel', up);
+  cvG.addEventListener('wheel', e => { if (!G || fly) return; e.preventDefault(); G.zt = clampZ(1 + (G.zt - 1) * Math.exp(e.deltaY * (e.deltaMode ? 0.05 : 0.0016))); draw(); }, { passive: false });
   window.addEventListener('resize', () => { if (G && !sec.hidden) size(); });
   $('globeGo').onclick = explore;
   $('globeBack').onclick = () => { hide(); window.introShowPage(2); };
   window.showGlobe = show; window.globeExplore = explore; window.globeVisible = () => !sec.hidden; window.globeDispose = dispose;
+  window.MARSGLOBE = { state: () => G && { z: G.z, zt: G.zt, lat: G.lat, rotY: G.globe.rotation.y, maxZ: T.maxZ, shown: T.shown, loading: T.loading, fails: T.fails, mb: Math.round(T.bytes / 1e6), cache: T.cache.size },
+    zoomTo: (z, lat, lon) => { if (!G) return; G.zt = G.z = clampZ(z); if (lat != null) { G.lat = lat * d2r; const n = v3(lat, lon); G.globe.rotation.y = Math.atan2(-n.x, n.z); } draw(); },
+    tiles: () => [...T.cache.values()].filter(t => t.mesh && t.mesh.visible).map(t => t.key),
+    tick: ts => frame(ts || performance.now()) };
 })();
 
 $('refreshBtn').onclick = refreshAll; $('refreshBtn2').onclick = refreshAll;
@@ -2275,5 +2928,222 @@ $('exSeg').addEventListener('click', e => {
   setTimeout(() => $('routeFitBtn').click(), 50);
 })();
 </script>
+
+<script>
+/* Marswalk tutorial: guided tour over the real interface. It opens panels and runs a short SOS demo, and puts
+   everything back when it ends; it never changes the route, the map data or any calculation. */
+(() => {
+  const T = (tr, en) => (typeof LANG !== 'undefined' && LANG === 'en') ? en : tr;
+  const panel = (side, open) => { if (typeof setPanel === 'function' && panelOpen(side) !== open) setPanel(side, open); };
+  const sosReset = () => { if (typeof closeEmergency === 'function' && (emerg || sosUI.open)) closeEmergency(); };
+  const sosOpen = () => { sosReset(); openEmergency(); };
+  const click = q => { const el = document.querySelector(q); if (el) el.click(); };
+  let demo = false;   // the tour created an emergency: remove it at the end
+  const steps = [
+    { center: true, k: ['BAŞLANGIÇ', 'START'],
+      title: ['Marswalk\'a hoş geldin', 'Welcome to Marswalk'],
+      body: ['Bu araç, Mars\'a inen ilk astronotların Gale kraterinde, Mount Sharp\'ın eteğinde yapacağı bir yürüyüşü (EVA) planlar. Rehber 3–4 dakika sürer: panelleri senin yerine açar, rota planlamayı, veri katmanlarını, güneş/gölge/doz hesabını ve SOS acil durum sistemini gerçek arayüz üzerinde gösterir. İstediğin an × ile çıkabilirsin.',
+        'This tool plans a walk (EVA) for the first astronauts on Mars, in Gale crater at the foot of Mount Sharp. The tour takes 3–4 minutes: it opens the panels for you and shows route planning, data layers, the sun/shadow/dose model and the SOS emergency system on the real interface. Leave any time with ×.'],
+      why: ['Her adımda vurgulanan alanı kendin de deneyebilirsin; rehber açıkken arayüz çalışmaya devam eder.', 'You can try each highlighted control yourself; the interface keeps working while the tour is open.'] },
+    { target: '#edgeL', before: () => { panel('L', false); panel('R', false); }, k: ['ARAYÜZ', 'LAYOUT'],
+      title: ['Paneller kapalı başlar', 'The panels start closed'],
+      body: ['Harita tüm ekranı kullanır. Sol kenardaki ‹ › düğmesi (veya [ tuşu) görev ve katman panelini, sağ kenardaki düğme (veya ] tuşu) plan, uyarı ve çevre panelini açar. Sonraki adımda ikisini de açıyorum.',
+        'The map uses the whole screen. The ‹ › button on the left edge (or the [ key) opens the mission and layer panel; the one on the right (or ]) opens plan, warnings and environment. Next step opens both.'],
+      why: ['Sahada, tablette veya kask ekranında haritanın kendisi en önemli bilgidir; paneller gerektiğinde açılır.', 'In the field, on a tablet or a helmet display, the map itself matters most; panels open when needed.'] },
+    { target: '#mapwrap', before: () => { panel('L', true); panel('R', true); }, k: ['HARİTA', 'MAP'],
+      title: ['Sektör haritası', 'The sector map'],
+      body: ['2,4 × 5,2 km\'lik alan HiRISE ortofoto ve 1 m DTM üzerine kurulu. Sürükleyerek kaydır, tekerlekle yakınlaş; imlecin altındaki noktanın yükseltisi, eğimi, pürüzlülüğü ve jeolojik birimi sol alttaki kutuda yazar. Mavi kesikli çizgi Curiosity\'nin gerçek rotası, turuncu çizgi senin EVA planın.',
+        'The 2.4 × 5.2 km area is built on the HiRISE orthophoto and 1 m DTM. Drag to pan, wheel to zoom; the box at the bottom left shows elevation, slope, roughness and geologic unit under the cursor. The dashed blue line is Curiosity\'s real route, the orange line your EVA plan.'],
+      why: ['Planlanan her adım gerçek yörünge verisine dayanıyor; tahmin edilen değil, ölçülmüş arazi.', 'Every step of the plan rests on real orbital data: measured terrain, not guessed.'] },
+    { target: '.maptools', k: ['HARİTA', 'MAP'],
+      title: ['Harita araçları: 2B / 3B', 'Map tools: 2D / 3D'],
+      body: ['2B ve 3B arasında geç: 3B\'de arazi kabartması üzerinde döndürüp yakınlaşabilirsin. «Tümü» sektörün tamamını, «Rotaya git» planı ekrana sığdırır, «Lejant» katman açıklamalarını açar/kapatır.',
+        'Switch between 2D and 3D: in 3D you can orbit and zoom over the terrain relief. «All» shows the whole sector, «Go to route» fits the plan, «Legend» toggles the layer key.'],
+      why: ['3B görünüm yamaçların ve kanalların birbirine göre konumunu bir bakışta anlatır.', '3D shows how slopes and channels relate to each other at a glance.'] },
+    { target: '#modeSeg', k: ['GÖREV', 'MISSION'],
+      title: ['Hazır görev veya kendi rotan', 'Preset mission or your own route'],
+      body: ['«Hazır görev» Curiosity\'nin 2019–2025 güzergâhından üç EVA sunar. «Kendi rotan» ile haritada A (gezgin park yeri) ve B (hedef) seçersin; araç en güvenli yürüyüş yolunu kendisi bulur.',
+        '«Preset mission» offers three EVAs along Curiosity\'s 2019–2025 path. With «Own route» you pick A (rover parking) and B (target) on the map; the tool finds the safest walking path itself.'],
+      why: ['Bilimsel hedef seçimi ile güvenli yol bulma aynı ekranda birleşir.', 'Choosing science targets and finding a safe path happen on the same screen.'] },
+    { target: '#evaSeg', k: ['GÖREV', 'MISSION'],
+      title: ['EVA-1, EVA-2, EVA-3', 'EVA-1, EVA-2, EVA-3'],
+      body: ['Her EVA farklı bir bilim sorusuna gider: kil birimi ve pediment, Marker Band ve kükürt bulunan Gediz Vallis kanalı, boxwork ağı. Seçince duraklar, rota ve tüm hesaplar yenilenir.',
+        'Each EVA targets a different science question: the clay unit and pediment, the Marker Band and the sulfur-bearing Gediz Vallis channel, the boxwork network. Picking one refreshes stops, route and every calculation.'],
+      why: ['Boxwork, NASA\'nın görev metninde örnek verilen hedef; Curiosity onu 2025\'te inceledi.', 'Boxwork is the example target in NASA\'s challenge text; Curiosity studied it in 2025.'] },
+    { target: '#stList', k: ['DURAKLAR', 'STOPS'],
+      title: ['Duraklar ve çalışma süreleri', 'Stops and work times'],
+      body: ['Kutu işaretiyle durağı aç/kapat, oklarla sırasını değiştir, sayıyla durakta çalışma süresini (dk) ayarla. «Haritadan durak ekle» ile yeni nokta eklenir; «Gezgini taşı» rover\'ın park yerini değiştirir. Bir durağa tıklayınca altta fotoğrafı, görevleri ve arazi değerleri açılır.',
+        'Tick a stop on/off, reorder with the arrows, set the work time (min) in the box. «Add stop from map» adds a point; «Move rover» changes where the rover parks. Click a stop to see its photo, tasks and terrain values below.'],
+      why: ['Durakta geçen süre de EVA\'ya eklenir; yalnızca yürüyüş mesafesi değil.', 'Time spent at a stop counts against the EVA too, not just walking distance.'] },
+    { target: '#pSlope', pick: el => el.closest('section') || el, k: ['GÜVENLİK', 'SAFETY'],
+      title: ['Yürüyüş kısıtları', 'Walking constraints'],
+      body: ['En büyük eğim ve pürüzlülük, giysiyle güvenle geçilebilecek zemini tanımlar; üstü yasak bölge olur. Yürüme hızı NASA\'nın Apollo planlama değerlerinden gelir ve yokuşta yavaşlar. EVA süresi sınırı, dönüş yedeği ve çıkış saati (LMST) de buradan ayarlanır.',
+        'Maximum slope and roughness define ground that is safe in a suit; anything above is no-go. Walking speed comes from NASA\'s Apollo planning values and drops uphill. EVA time limit, return reserve and start time (LMST) are set here too.'],
+      why: ['Kural: yürüyüşün hiçbir anında gezgine dönüş süresi, kalan EVA süresinden uzun olamaz.', 'The rule: at no point may the walk back to the rover take longer than the EVA time left.'] },
+    { target: '#lUnits', pick: el => el.closest('section') || el, k: ['VERİ', 'DATA'],
+      title: ['Veri katmanları', 'Data layers'],
+      body: ['Optik (HiRISE), topografik (DTM eğim, pürüzlülük, eş yükselti), spektral (CRISM mineraller), termal (THEMIS gece parlaklığı) ve Curiosity rotası üst üste açılabilir. «Gezgine dönüş süresi» eğrileri her noktadan rover\'a kaç dakikada dönüleceğini gösterir.',
+        'Optical (HiRISE), topographic (DTM slope, roughness, contours), spectral (CRISM minerals), thermal (THEMIS night brightness) and Curiosity\'s route can be stacked. The «Walk-back time» lines show how many minutes it takes to return to the rover from anywhere.'],
+      why: ['Görev en az üç veri türü istiyor; burada altı farklı NASA görevinden veri var.', 'The challenge asks for at least three data types; here there are data from six NASA missions.'] },
+    { target: '#lShade', pick: el => el.closest('.layer') || el, before: () => { const c = document.getElementById('lShade'); if (c && !c.checked) { c.checked = true; c.dispatchEvent(new Event('change')); tourShade = true; } }, k: ['GÜNEŞ', 'SUN'],
+      title: ['Güneş gölgesi katmanı', 'Sun shadow layer'],
+      body: ['Bu katmanı senin için açtım: koyu mavi alanlar seçilen saatte gölgede. Kaydırıcıyla günün saatini değiştir; gölgeler DTM üzerinde güneşin o andaki konumuna göre yeniden hesaplanır.',
+        'I switched this layer on for you: dark blue areas are in shadow at the chosen time. Move the slider to change the time of day; shadows are recomputed on the DTM for the sun position at that moment.'],
+      why: ['Gölgede zemin soğuk, kaya ile kum zor ayırt edilir; sabah ve akşam rotası farklı olmalı.', 'Shadowed ground is cold and rock is harder to tell from sand; morning and evening routes should differ.'] },
+    { target: '#sTotal', pick: el => el.closest('section') || el, k: ['PLAN', 'PLAN'],
+      title: ['Plan özeti', 'Plan summary'],
+      body: ['Toplam EVA süresi, yürüyüş mesafesi ve süre sınırına ne kadar yaklaşıldığı burada. Altındaki tablo yürüme ve çalışma sürelerini, tırmanışı, en dik geçişi, pürüzlü zemini, gölgede yürüyüşü ve tahmini dozu verir.',
+        'Total EVA time, walking distance and how close the plan is to the limit. The table below gives walking and work time, climb, steepest section, rough ground, walking in shadow and estimated dose.'],
+      why: ['Kısa bir rota bile yokuş, pürüzlü zemin veya uzun çalışma yüzünden sınırı aşabilir.', 'Even a short route can break the limit because of climbs, rough ground or long work.'] },
+    { target: '#warn', k: ['GÜVENLİK', 'SAFETY'],
+      title: ['Uyarılar', 'Warnings'],
+      body: ['DUR: plan bu haliyle güvenli değil (yol yok, süre aşıldı, dönüş kuralı çiğneniyor, gün batımı). DİKKAT: dik yamaç, pürüzlü zemin, gölge, alçak güneşe karşı yürüyüş. NOT: uzay havası (DONKI) gibi bilgiler.',
+        'STOP: the plan is not safe as is (no path, time exceeded, walk-back rule broken, sunset). CAUTION: steep slope, rough ground, shadow, walking into a low sun. NOTE: information such as space weather (DONKI).'],
+      why: ['Uyarılar her ayar değişikliğinde yeniden hesaplanır.', 'Warnings are recomputed whenever a setting changes.'] },
+    { target: '#tl', pick: el => el.closest('section') || el, k: ['ZAMAN', 'TIME'],
+      title: ['Zaman çizelgesi ve yükselti profili', 'Timeline and elevation profile'],
+      body: ['Çizelgede turuncu bloklar yürüyüş, koyu bloklar durak çalışması; kırmızı çizgi EVA sınırı. Profilde rota boyunca yükselti, eğime göre renklenmiş çizgi ve altında güneş/gölge şeridi var.',
+        'In the timeline orange blocks are walking, dark blocks are work at stops; the red line is the EVA limit. The profile shows elevation along the route, coloured by slope, with a sun/shadow strip below.'],
+      why: ['Nerede yorulacağını ve ne zaman döneceğini önceden görmek, sahada karar vermeyi kolaylaştırır.', 'Seeing in advance where it gets hard and when you turn back makes field decisions easier.'] },
+    { target: '#sunBlk', k: ['GÜNEŞ · DOZ', 'SUN · DOSE'],
+      title: ['Güneş, gölge ve radyasyon dozu', 'Sun, shadow and radiation dose'],
+      body: ['Grafik EVA boyunca güneşin yüksekliğini, mavi bantlar rotanın gölgede kaldığı saatleri gösterir. Güneş konumu Mars24 yöntemiyle hesaplanır; gün doğumu ve batımı REMS ölçümüyle karşılaştırılır. Doz, RAD\'ın Gale yüzey değeri ile rota boyunca gökyüzüne açıklıktan tahmin edilir.',
+        'The chart shows the sun\'s elevation during the EVA; blue bands are times when the route is in shadow. The sun position uses the Mars24 method; sunrise and sunset are checked against REMS. Dose is estimated from RAD\'s Gale surface value and how open the sky is along the route.'],
+      why: ['Gölge, ısı ve görüş için; doz ise astronot sağlığı için NASA\'nın öncelikli güvenlik bilgisidir.', 'Shadow matters for heat and visibility; dose for crew health, NASA\'s first safety priority.'] },
+    { target: '#radKv', pick: el => el.closest('section') || el, k: ['UZAY HAVASI', 'SPACE WEATHER'],
+      title: ['Radyasyon ve uzay havası', 'Radiation and space weather'],
+      body: ['Curiosity RAD\'ın ölçtüğü yüzey dozu, bu EVA için tahmin ve NASA kariyer sınırı yan yana. Altta DONKI\'den Mars\'a ulaşması öngörülen CME\'ler; «DONKI\'den yenile» güncel veriyi çeker.',
+        'Surface dose measured by Curiosity RAD, the estimate for this EVA and NASA\'s career limit side by side. Below: CMEs predicted to reach Mars from DONKI; «Refresh from DONKI» fetches current data.'],
+      why: ['Güneş parçacık olayı (SEP) beklenen bir günde EVA ertelenmeli.', 'An EVA should be postponed on a day a solar particle event (SEP) is expected.'] },
+    { target: '#medaTbl', pick: el => el.closest('section') || el, k: ['HAVA', 'WEATHER'],
+      title: ['Yüzey hava durumu (REMS)', 'Surface weather (REMS)'],
+      body: ['Curiosity\'nin bu sektörde ölçtüğü hava ve zemin sıcaklığı, basınç, UV ve gün doğumu/batımı. Zemin öğlen 0 °C\'ye yaklaşırken gece −80 °C\'nin altına iner.',
+        'Air and ground temperature, pressure, UV and sunrise/sunset measured by Curiosity in this sector. The ground nears 0 °C at noon and falls below −80 °C at night.'],
+      why: ['Eldiven ve bot ısıtma bütçesi bu değerlere göre planlanır.', 'The glove and boot heating budget is planned from these values.'] },
+    { target: '#sosBtn', before: () => { sosReset(); panel('R', true); }, k: ['SOS · 1/6', 'SOS · 1/6'],
+      title: ['SOS acil durum sistemi', 'SOS emergency system'],
+      body: ['Üst çubuktaki ACİL düğmesi (ve haritanın üstündeki küçük SOS düğmesi) acil durum panelini açar. Sonraki adımlarda kısa bir demo yapıyorum; rehber bitince demo acil durumu otomatik olarak kaldırılır.',
+        'The ACİL button in the top bar (and the small SOS button over the map) opens the emergency panel. The next steps run a short demo; the demo emergency is removed automatically when the tour ends.'],
+      why: ['Bu bir görev simülasyonudur, gerçek bir NASA acil durum sistemi değildir; hiçbir yere sinyal gönderilmez.', 'This is a mission simulation, not a real NASA emergency system; no signal is sent anywhere.'] },
+    { target: '#emerg', before: () => { sosOpen(); demo = true; }, k: ['SOS · 2/6', 'SOS · 2/6'],
+      title: ['Acil durum türü ve otomatik bilgiler', 'Emergency type and automatic data'],
+      body: ['Sağlık sorunu, iletişim kaybı, araç arızası, oksijen sorunu, tehlikeli arazi, toz fırtınası, radyasyon (SEP) veya diğer. Altta konum, son bilinen konum, EVA süresi, kalan süre, oksijen rezervi (SİMÜLASYON), en yakın güvenli istasyon ve mevcut rota kendiliğinden dolar.',
+        'Medical problem, loss of comms, rover fault, oxygen problem, hazardous terrain, dust storm, radiation (SEP) or other. Below, position, last known position, EVA time, time left, oxygen reserve (SIMULATION), nearest safe station and current route fill in by themselves.'],
+      why: ['Her tür rotayı farklı etkiler: örneğin tehlikeli arazide eğim sınırı sıkılaşır, sağlık sorununda yürüme yavaşlar.', 'Each type changes the route: hazardous terrain tightens the slope limit, a medical problem slows the walk.'] },
+    { target: '.emerg .confirm', before: () => { sosOpen(); demo = true; click('[data-type="oxygen"]'); setTimeout(() => click('.emerg [data-act="sos"]'), 60); }, delay: 420, k: ['SOS · 3/6', 'SOS · 3/6'],
+      title: ['Büyük SOS düğmesi ve onay', 'Big SOS button and confirmation'],
+      body: ['Örnek olarak «Oksijen sistemi sorunu» seçip SOS\'a bastım. Yanlışlıkla basmaya karşı önce onay istenir: tür ve konum gösterilir, «Onayla» ile plan oluşur, «Vazgeç» ile geri dönülür.',
+        'As an example I picked «Oxygen system problem» and pressed SOS. To guard against accidental presses a confirmation comes first: type and position are shown, «Confirm» builds the plan, «Cancel» goes back.'],
+      why: ['Acil durumda tek dokunuş hızlıdır, onay adımı yanlış alarmı önler.', 'One tap is fast in an emergency; the confirmation prevents false alarms.'] },
+    { target: '#ePlan', before: () => { if (!emerg || emerg.stage !== 'confirm') { sosOpen(); demo = true; click('[data-type="oxygen"]'); setTimeout(() => click('.emerg [data-act="sos"]'), 60); setTimeout(() => click('.emerg [data-act="confirm"]'), 160); } else click('.emerg [data-act="confirm"]'); }, delay: 800, k: ['SOS · 4/6', 'SOS · 4/6'],
+      title: ['Acil durum planı', 'Emergency plan'],
+      body: ['Onaydan sonra plan çıkar: hedef (basınçlı gezgin kabini veya doğal siper), yürüme süresi, mesafe, yön, tırmanış, varışta kalan oksijen ve T+ dakika cinsinden adım adım zaman çizelgesi. Rota aynı DTM ve yürüme modeliyle hesaplanır.',
+        'After confirming, the plan appears: target (pressurised rover cabin or natural shelter), walking time, distance, heading, climb, oxygen left on arrival and a step-by-step timeline in T+ minutes. The route uses the same DTM and walking model.'],
+      why: ['Varışta oksijen yetmiyorsa değer kırmızı görünür; ekip hemen başka bir seçenek arar.', 'If oxygen will not last to arrival the value turns red; the crew looks for another option right away.'] },
+    { target: '#sosMini', before: () => { if (!emerg || emerg.stage !== 'active') return; minimiseEmergency(); }, k: ['SOS · 5/6', 'SOS · 5/6'],
+      title: ['Haritada güvenli dönüş rotası', 'Safe return route on the map'],
+      body: ['Paneli küçülttüm: haritada kırmızı-beyaz kesikli çizgi güvenli dönüş rotası, soluk turuncu çizgi iptal edilen mevcut rota, kırmızı halka astronotun konumu. Üstteki «SOS · AKTİF» düğmesi paneli geri açar; acil durum sürdükçe yanıp söner.',
+        'I minimised the panel: on the map the red-and-white dashed line is the safe return route, the faded orange line the cancelled current route, the red ring the astronaut. The «SOS · ACTIVE» button at the top reopens the panel and blinks while the emergency lasts.'],
+      why: ['Panel kapalıyken bile acil durum görünür kalır; harita kapanmaz.', 'Even with the panel closed the emergency stays visible; the map is not blocked.'] },
+    { target: '#eHd', before: () => { if (!sosUI.open) openEmergency(); }, k: ['SOS · 6/6', 'SOS · 6/6'],
+      title: ['Paneli taşı, sıfırla, küçült', 'Move, reset, minimise'],
+      body: ['Başlık çubuğundan tutup paneli haritanın istediğin yerine sürükle (fare veya dokunmatik); harita dışına çıkamaz. ⟲ konumu sıfırlar, – küçültür. «Konumu haritada seç» ile astronotun yerini değiştirince plan yeniden hesaplanır; «Acil durumu sonlandır» her şeyi kapatır.',
+        'Drag the panel by its header anywhere over the map (mouse or touch); it cannot leave the map. ⟲ resets its position, – minimises it. «Pick position on map» moves the astronaut and recomputes the plan; «End emergency» closes everything.'],
+      why: ['Demo acil durumu rehber bitince kaldırılacak.', 'The demo emergency will be removed when the tour ends.'] },
+    { target: '#tutorialOpenBtn', before: () => { if (demo) { sosReset(); demo = false; } }, k: ['BİTİŞ', 'END'],
+      title: ['Hazırsın', 'You are ready'],
+      body: ['Demo acil durumu kaldırdım. Bu rehberi istediğin zaman üstteki «Etkileşimli rehber» düğmesiyle yeniden açabilirsin. «Hakkında» tanıtım ekranını ve Mars küresini, «EN» İngilizceyi, «Gündüz/Gece» temayı değiştirir. Kaynakların tamamı sağ panelin en altında «Veri kaynakları ve yöntem» bölümünde.',
+        'I removed the demo emergency. Reopen this tour any time with the «Interactive guide» button at the top. «About» shows the intro and the Mars globe, «TR/EN» switches language, «Day/Night» the theme. All sources are at the bottom of the right panel under «Data sources and method».'],
+      why: ['İyi yürüyüşler, Marswalk ekibi.', 'Happy walking, from the Marswalk team.'] },
+  ];
+  let index = 0, shade, spot, card, resizeHandler, tourShade = false, timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  function cleanup() {
+    timers.forEach(clearTimeout); timers = [];
+    if (shade) shade.remove(); if (spot) spot.remove(); if (card) card.remove();
+    shade = spot = card = null; document.removeEventListener('keydown', keyHandler, true); window.removeEventListener('resize', resizeHandler);
+  }
+  function close() {
+    cleanup();
+    if (demo) { sosReset(); demo = false; }
+    if (tourShade) { const c = document.getElementById('lShade'); if (c && c.checked) { c.checked = false; c.dispatchEvent(new Event('change')); } tourShade = false; }
+  }
+  function keyHandler(e) {
+    if (e.target.closest && e.target.closest('input,textarea,select')) return;
+    if (e.key === 'Escape') { e.stopPropagation(); close(); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); show(index + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); show(index - 1); }
+  }
+  function start() {
+    cleanup(); index = 0;
+    shade = document.createElement('div'); shade.className = 'tour-shade';
+    spot = document.createElement('div'); spot.className = 'tour-spot';
+    card = document.createElement('section'); card.className = 'tour-card'; card.setAttribute('role', 'dialog'); card.setAttribute('aria-modal', 'false'); card.setAttribute('aria-label', T('Etkileşimli rehber', 'Interactive guide'));
+    document.body.append(shade, spot, card);
+    document.addEventListener('keydown', keyHandler, true); resizeHandler = () => position(); window.addEventListener('resize', resizeHandler);
+    show(0);
+    if (!start.hooked) { start.hooked = true; const app = document.querySelector('.app'); if (app) app.addEventListener('transitionend', () => { if (card) { const el = targetOf(steps[index]); if (el) el.scrollIntoView({ block: 'center', inline: 'nearest' }); position(); } }); }
+  }
+  const targetOf = st => { if (!st.target) return null; let el = document.querySelector(st.target); if (el && st.pick) el = st.pick(el); return el && el.getClientRects().length ? el : null; };
+  function position() {
+    if (!card) return;
+    const st = steps[index], el = targetOf(st);
+    card.classList.toggle('center', !el);
+    shade.style.display = el ? 'none' : 'block';   // the spotlight's own shadow dims the page when there is a target
+    if (!el) { spot.style.display = 'none'; card.style.left = card.style.right = ''; return; }
+    const r = el.getBoundingClientRect(); spot.style.display = 'block';
+    const L0 = Math.max(4, r.left - 5), T0 = Math.max(4, r.top - 5);
+    spot.style.left = L0 + 'px'; spot.style.top = T0 + 'px';
+    spot.style.width = Math.max(12, Math.min(innerWidth - L0 - 4, r.width + 10)) + 'px'; spot.style.height = Math.max(12, Math.min(innerHeight - T0 - 4, r.height + 10)) + 'px';
+    // card on the side away from the target, so it never covers what it explains
+    const cx = r.left + r.width / 2, wide = r.width > innerWidth * .55;
+    if (!wide && cx > innerWidth * .5) { card.style.left = '22px'; card.style.right = 'auto'; } else { card.style.right = '22px'; card.style.left = 'auto'; }
+  }
+  function show(n) {
+    if (!card) return;
+    timers.forEach(clearTimeout); timers = [];
+    index = Math.max(0, Math.min(steps.length - 1, n)); const st = steps[index];
+    try { if (st.before) st.before(); } catch (e) { console.warn('tour step', e); }
+    const go = () => { const el = targetOf(st); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }); later(position, 260); later(position, 600); };
+    later(go, st.delay || 300); position();
+    const last = index === steps.length - 1;
+    card.innerHTML = `<button class="tour-close" type="button" aria-label="${T('Rehberi kapat', 'Close the guide')}">×</button><div class="tour-kicker">MARSWALK · ${T(...st.k)}</div><h2>${T(...st.title)}</h2><p>${T(...st.body)}</p><div class="tour-why"><b>${T('Neden önemli?', 'Why it matters')}</b><br>${T(...st.why)}</div><div class="tour-dots">${steps.map((_, i) => `<i class="${i === index ? 'on' : i < index ? 'done' : ''}"></i>`).join('')}</div><div class="tour-controls"><span class="tour-count">${String(index + 1).padStart(2, '0')} / ${steps.length}</span>${last ? '' : `<button type="button" data-tour="skip">${T('Rehberi atla', 'Skip tour')}</button>`}<button type="button" data-tour="prev" ${index === 0 ? 'disabled' : ''}>${T('Geri', 'Back')}</button><button class="primary" type="button" data-tour="next">${last ? T('Bitir', 'Finish') : T('İleri', 'Next')}</button></div>`;
+    card.querySelector('.tour-close').addEventListener('click', close);
+    const sk = card.querySelector('[data-tour="skip"]'); if (sk) sk.addEventListener('click', close);
+    card.querySelector('[data-tour="prev"]').addEventListener('click', () => show(index - 1));
+    card.querySelector('[data-tour="next"]').addEventListener('click', () => last ? close() : show(index + 1));
+    card.querySelector('[data-tour="next"]').focus({ preventScroll: true });
+  }
+  /* first screen after the intro: offer the tour (panels are closed until then) */
+  const KEY = 'marswalk-tour-skip';
+  let offered = false;
+  function offer() {
+    if (offered || card) return; offered = true;
+    try { if (localStorage.getItem(KEY) === '1') return hintPanels(); } catch (e) {}
+    const box = document.createElement('section'); box.className = 'tour-card tour-offer center'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', T('Rehber önerisi', 'Guide suggestion'));
+    const sh = document.createElement('div'); sh.className = 'tour-shade';
+    box.innerHTML = `<div class="tour-kicker">MARSWALK · ${T('İLK KULLANIM', 'FIRST USE')}</div><h2>${T('Önce rehberi açmanı öneririz', 'We recommend starting the guide first')}</h2>
+      <p>${T('Yan paneller şu an kapalı, harita tüm ekranda. Etkileşimli rehber panelleri senin için açar ve görev planlama, veri katmanları, güneş/gölge/doz ve SOS acil durum sistemini gerçek arayüz üzerinde adım adım gösterir (~3–4 dk).', 'The side panels are closed for now and the map fills the screen. The interactive guide opens the panels for you and walks through mission planning, data layers, sun/shadow/dose and the SOS emergency system on the real interface (~3–4 min).')}</p>
+      <label class="tour-never"><input type="checkbox" id="tourNever"> ${T('Bir daha gösterme', 'Do not show again')}</label>
+      <div class="tour-controls"><span class="tour-count"></span><button type="button" data-tour="skip">${T('Atla', 'Skip')}</button><button class="primary" type="button" data-tour="start">${T('Rehberi başlat', 'Start the guide')}</button></div>`;
+    document.body.append(sh, box);
+    const done = () => { try { if (box.querySelector('#tourNever').checked) localStorage.setItem(KEY, '1'); } catch (e) {} sh.remove(); box.remove(); document.removeEventListener('keydown', k, true); };
+    const k = e => { if (e.key === 'Escape') { e.stopPropagation(); done(); hintPanels(); } };
+    document.addEventListener('keydown', k, true);
+    box.querySelector('[data-tour="skip"]').addEventListener('click', () => { done(); hintPanels(); });
+    box.querySelector('[data-tour="start"]').addEventListener('click', () => { done(); start(); });
+    box.querySelector('[data-tour="start"]').focus();
+  }
+  function hintPanels() { if (typeof toast === 'function') setTimeout(() => toast(T('Paneller kapalı: kenarlardaki ‹ › düğmeleriyle veya [ ] tuşlarıyla aç. Rehber üst çubukta.', 'Panels are closed: open them with the ‹ › edge buttons or the [ ] keys. The guide is in the top bar.')), 300); }
+  const intro = document.getElementById('intro');
+  const watch = () => { if (intro && intro.hidden) setTimeout(offer, 500); };
+  if (intro) new MutationObserver(watch).observe(intro, { attributes: true, attributeFilter: ['hidden'] });
+  watch();
+  const launch = document.getElementById('tutorialOpenBtn');
+  if (launch) launch.addEventListener('click', () => { offered = true; document.querySelectorAll('.tour-offer').forEach(b => { b.previousElementSibling && b.previousElementSibling.classList.contains('tour-shade') && b.previousElementSibling.remove(); b.remove(); }); start(); });
+  window.MARSTOUR = { start, close, offer, steps: () => steps.length, show: n => show(n) };
+})();
+</script>
+
 </body>
 </html>
