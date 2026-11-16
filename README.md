@@ -20,9 +20,8 @@ Key Features
 Technologies and Data Sources Used
 Data Sources: NASA Open Data Portal (MOLA / HiRISE Topography and Surface Data)
 
-Development Environment / Language: (Write the language you use here, e.g., Python / C# / JavaScript)
+Development Environment / Language: (html)
 
-Map and 3D Engine: (Write the library/engine you use here, e.g., Unity / Three.js / Cesium / CustomTkinter)
 
 
 
@@ -53,5 +52,5 @@ Kullanıcılar kendi özel rotalarını belirleyebilir veya önceden oluşturulm
 ## Kullanılan Teknolojiler ve Veri Kaynakları
 
 * **Veri Kaynakları:** NASA Açık Veri Portalı (MOLA / HiRISE Topografya ve Yüzey Verileri)
-* **Geliştirme Ortamı / Dil:** *(Kullandığın dili buraya yaz, örn: Python / C# / JavaScript)*
-* **Harita ve 3B Motoru:** *(Kullandığın kütüphane/motoru buraya yaz, örn: Unity / Three.js / Cesium / CustomTkinter)*
+* **Geliştirme Ortamı / Dil:** *(html)*
+
